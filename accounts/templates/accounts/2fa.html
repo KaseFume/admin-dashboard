@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2FA Email OTP Login</title>
+  <link rel="stylesheet" href="{% static 'accounts/2fa.css' %}">
+</head>
+<body>
+  <div class="login-container">
+    <img src="{% static 'img/logo.png' %}" alt="Company Logo" class="logo">
+    <div class="form-container">
+      <h1>VMN Portal</h1>
+
+      <!-- Display Error Message -->
+      {% if error_message %}
+      <script>
+          alert("{{ error_message }}");
+      </script>
+      {% endif %}
+
+      <!-- Login Form -->
+      <form id="login-form" method="POST" action="{% url 'send_otp' %}">
+        {% csrf_token %}
+        <div class="input-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        </div>
+
+        <div class="input-group password-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        </div>
+
+        <button type="submit" id="login-btn">Login</button>
+      </form>
+
+      <!-- OTP Form -->
+      <form id="otp-form" class="hidden" method="POST" action="{% url 'verify_otp' %}">
+        {% csrf_token %}
+        <div class="input-group">
+          <label for="otp">Enter OTP</label>
+          <input type="text" id="otp" name="otp" placeholder="Enter the OTP sent to your email" required>
+        </div>
+        <button type="submit" id="verify-btn">Verify</button>
+        <button type="button" id="back-to-login-btn" class="back-btn">Back to Login</button>
+        <p class="resend-text">Didn’t get the code? <span id="resend-otp">Resend OTP</span></p>
+      </form>
+
+      <div id="loading-indicator" class="hidden"></div>
+    </div>
+  </div>
+  <script>
+    // Check if OTP was sent
+    {% if otp_sent %}
+        document.getElementById('login-form').classList.add('hidden');
+        document.getElementById('otp-form').classList.remove('hidden');
+    {% endif %}
+  </script>
+  <script src="{% static 'accounts/2fa.js' %}"></script>
+</body>
+</html>
