@@ -3,6 +3,10 @@ const otpForm = document.getElementById('otp-form');
 const loadingIndicator = document.getElementById('loading-indicator');
 const resendOtpBtn = document.getElementById('resend-btn');
 const backToLoginBtn = document.getElementById('back-to-login-btn');
+const resendMessage = document.getElementById('resend-message');
+
+// CSRF token from the template
+const csrfToken = "{{ csrf_token }}";
 
 // Show loading indicator
 function showLoading() {
@@ -18,7 +22,6 @@ function hideLoading() {
 loginForm.addEventListener('submit', (e) => {
     e.preventDefault();  // Prevent page reload
     showLoading();  // Show loading indicator
-
     loginForm.submit();  // Submit the form manually after showing the loading indicator
 });
 
@@ -26,7 +29,6 @@ loginForm.addEventListener('submit', (e) => {
 otpForm.addEventListener('submit', (e) => {
     e.preventDefault();  // Prevent page reload
     showLoading();  // Show loading indicator
-
     otpForm.submit();  // Submit the form manually after showing the loading indicator
 });
 
@@ -45,19 +47,26 @@ resendOtpBtn.addEventListener('click', () => {
 
     fetch(resendOtpUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,  // Add CSRF token to headers
+        },
+        body: JSON.stringify({}),  // Optional: send any required data
     })
         .then((response) => {
             if (!response.ok) {
+                // If response isn't OK, throw error with response text
                 return response.text().then((text) => { throw new Error(text); });
             }
-            return response.json();
+            return response.json();  // Parse response JSON if OK
         })
         .then((data) => {
             console.log('OTP resent:', data);
-            document.getElementById('resend-message').classList.remove('hidden');  // Show success message
+            resendMessage.classList.remove('hidden');  // Show success message
         })
-        .catch((error) => console.error('Error:', error))
+        .catch((error) => {
+            console.error('Error:', error);  // Log error in console
+            alert('Error resending OTP: ' + error.message);  // Show alert to the user
+        })
         .finally(() => hideLoading());  // Always hide loading indicator
 });

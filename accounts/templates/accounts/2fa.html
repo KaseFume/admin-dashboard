@@ -40,19 +40,19 @@
       <form id="otp-form" class="hidden" method="POST" action="{% url 'verify_otp' %}">
         {% csrf_token %}
         <div class="input-group">
-          <label for="otp">Enter OTP</label>
-          <input type="text" id="otp" name="otp" placeholder="Enter the OTP sent to your email" required>
+            <label for="otp">Enter OTP</label>
+            <input type="text" id="otp" name="otp" placeholder="Enter the OTP sent to your email" required>
         </div>
+    
         <button type="submit" id="verify-btn">Verify</button>
         <button type="button" id="back-to-login-btn" class="back-btn">Back to Login</button>
+    
         <p class="resend-text">
-          Didn’t get the code? <span id="resend-btn" class="resend-link">Resend OTP</span>
+            Didn’t get the code? <span id="resend-btn" class="resend-link">Resend OTP</span>
         </p>
-        
-      </form>
-      
-      <p id="resend-message" class="hidden">OTP has been resent!</p>
-      
+        <p id="resend-message" class="hidden">OTP has been resent!</p>
+    </form>
+    
 
       <div id="loading-indicator" class="hidden"></div>
     </div>
