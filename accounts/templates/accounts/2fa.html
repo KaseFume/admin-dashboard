@@ -45,8 +45,13 @@
         </div>
         <button type="submit" id="verify-btn">Verify</button>
         <button type="button" id="back-to-login-btn" class="back-btn">Back to Login</button>
-        <p class="resend-text">Didn’t get the code? <span id="resend-otp">Resend OTP</span></p>
+        <p class="resend-text">
+          Didn’t get the code? <span id="resend-otp" class="resend-link">Resend OTP</span>
+        </p>
       </form>
+      
+      <p id="resend-message" class="hidden">OTP has been resent!</p>
+      
 
       <div id="loading-indicator" class="hidden"></div>
     </div>

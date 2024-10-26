@@ -31,28 +31,25 @@ backToLoginBtn.addEventListener('click', () => {
 });
 
 // Handle OTP resend
-resendOtp.addEventListener('click', () => {
-    showLoading();  // Show loading indicator
+document.getElementById("resend-otp").addEventListener("click", function () {
+    log.console('You just interact bullsht')
     fetch("{% url 'resend_otp' %}", {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': '{{ csrf_token }}',  // Include CSRF token
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({})  // Send an empty body for the request
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}", // CSRF token is necessary for security
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ action: "resend" }),
     })
-    .then(response => {
-        hideLoading();  // Hide loading indicator after receiving response
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          document.getElementById("resend-message").classList.remove("hidden");
+          document.getElementById("resend-message").innerText = "OTP has been resent!";
+        } else {
+          alert("Failed to resend OTP. Please try again.");
         }
-        return response.json();  // Parse JSON from response
-    })
-    .then(data => {
-        alert(data.message);  // Show success message from server response
-    })
-    .catch(error => {
-        hideLoading();  // Hide loading indicator
-        alert('An error occurred: ' + error.message);  // Show error message
-    });
-});
+      })
+      .catch((error) => console.error("Error:", error));
+  });
+  
