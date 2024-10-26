@@ -45,16 +45,26 @@ def verify_otp(request):
         email = request.session.get('user_email')
         entered_otp = request.POST.get('otp')
 
-        # Check if OTP is valid
+        if not email:
+            # If email isn't in session, redirect to login
+            return redirect('send_otp')
+
+        # Check if the entered OTP matches the stored OTP
         if email in otp_storage and str(otp_storage[email]) == entered_otp:
-            user = authenticate(request, email=email)
+            user = CustomUser.objects.filter(email=email).first()
             if user:
                 login(request, user)  # Log the user in
-                otp_storage.pop(email)  # Remove OTP from storage
+                otp_storage.pop(email)  # Remove OTP from memory
                 return HttpResponse('Logged in successfully!')
+            else:
+                return render(request, 'accounts/2fa.html', {
+                    'error_message': 'User not found.', 'otp_sent': True
+                })
 
-        # Render with error message for invalid OTP
-        return render(request, 'accounts/2fa.html', {'error_message': 'Incorrect OTP.', 'otp_sent': True})
+        # OTP is invalid
+        return render(request, 'accounts/2fa.html', {
+            'error_message': 'Incorrect OTP.', 'otp_sent': True
+        })
 
     return redirect('send_otp')
 
@@ -63,9 +73,14 @@ def verify_otp(request):
 def resend_otp(request):
     if request.method == 'POST':
         email = request.session.get('user_email')
+
+        if not email:
+            return JsonResponse({'error': 'Email not in session.'}, status=400)
+
         if email in otp_storage:
+            # Generate and save new OTP
             otp = random.randint(100000, 999999)
-            otp_storage[email] = otp  # Save new OTP in memory
+            otp_storage[email] = otp
 
             # Send the new OTP via email
             send_mail(
@@ -76,6 +91,8 @@ def resend_otp(request):
                 fail_silently=False,
             )
             return JsonResponse({'message': 'OTP resent successfully!'})
-        return JsonResponse({'error': 'Email not found.'}, status=400)
+        else:
+            return JsonResponse({'error': 'OTP not found.'}, status=400)
+
     return JsonResponse({'error': 'Invalid request method.'}, status=405)
 

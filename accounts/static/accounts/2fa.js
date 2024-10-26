@@ -1,7 +1,7 @@
 const loginForm = document.getElementById('login-form');
 const otpForm = document.getElementById('otp-form');
 const loadingIndicator = document.getElementById('loading-indicator');
-const resendOtp = document.getElementById('resend-otp');
+const resendOtpBtn = document.getElementById('resend-btn');
 const backToLoginBtn = document.getElementById('back-to-login-btn');
 
 // Show loading indicator
@@ -16,12 +16,18 @@ function hideLoading() {
 
 // Handle form submission for the login form
 loginForm.addEventListener('submit', (e) => {
-    showLoading();  // Show loading indicator when form is submitted
+    e.preventDefault();  // Prevent page reload
+    showLoading();  // Show loading indicator
+
+    loginForm.submit();  // Submit the form manually after showing the loading indicator
 });
 
 // Handle form submission for the OTP form
 otpForm.addEventListener('submit', (e) => {
-    showLoading();  // Show loading indicator when OTP form is submitted
+    e.preventDefault();  // Prevent page reload
+    showLoading();  // Show loading indicator
+
+    otpForm.submit();  // Submit the form manually after showing the loading indicator
 });
 
 // Handle Back to Login button
@@ -30,26 +36,28 @@ backToLoginBtn.addEventListener('click', () => {
     loginForm.classList.remove('hidden');  // Show login form
 });
 
+// Fetch the resend OTP URL from Django template
+const resendOtpUrl = "{% url 'resend_otp' %}";
+
 // Handle OTP resend
-document.getElementById("resend-otp").addEventListener("click", function () {
-    log.console('You just interact bullsht')
-    fetch("{% url 'resend_otp' %}", {
-      method: "POST",
-      headers: {
-        "X-CSRFToken": "{{ csrf_token }}", // CSRF token is necessary for security
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ action: "resend" }),
+resendOtpBtn.addEventListener('click', () => {
+    showLoading();  // Show loading indicator
+
+    fetch(resendOtpUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          document.getElementById("resend-message").classList.remove("hidden");
-          document.getElementById("resend-message").innerText = "OTP has been resent!";
-        } else {
-          alert("Failed to resend OTP. Please try again.");
-        }
-      })
-      .catch((error) => console.error("Error:", error));
-  });
-  
+        .then((response) => {
+            if (!response.ok) {
+                return response.text().then((text) => { throw new Error(text); });
+            }
+            return response.json();
+        })
+        .then((data) => {
+            console.log('OTP resent:', data);
+            document.getElementById('resend-message').classList.remove('hidden');  // Show success message
+        })
+        .catch((error) => console.error('Error:', error))
+        .finally(() => hideLoading());  // Always hide loading indicator
+});
