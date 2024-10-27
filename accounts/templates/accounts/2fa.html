@@ -13,11 +13,8 @@
     <div class="form-container">
       <h1>VMN Portal</h1>
 
-      <!-- Display Error Message -->
       {% if error_message %}
-      <script>
-          alert("{{ error_message }}");
-      </script>
+      <script>alert("{{ error_message }}");</script>
       {% endif %}
 
       <!-- Login Form -->
@@ -40,30 +37,77 @@
       <form id="otp-form" class="hidden" method="POST" action="{% url 'verify_otp' %}">
         {% csrf_token %}
         <div class="input-group">
-            <label for="otp">Enter OTP</label>
-            <input type="text" id="otp" name="otp" placeholder="Enter the OTP sent to your email" required>
+          <label for="otp">Enter OTP</label>
+          <input type="text" id="otp" name="otp" placeholder="Enter the OTP sent to your email" required>
         </div>
-    
+
         <button type="submit" id="verify-btn">Verify</button>
         <button type="button" id="back-to-login-btn" class="back-btn">Back to Login</button>
-    
+
         <p class="resend-text">
-            Didn’t get the code? <span id="resend-btn" class="resend-link"><a href="/accounts/resend-otp/" style="text-decoration:none;color:#555;">Resend OTP</a></span>
+          Didn’t get the code?
+          <span id="resend-btn" class="resend-link">
+            <a href="{% url 'resend_otp' %}" style="text-decoration:none;color:#555;">Resend OTP</a>
+          </span>
         </p>
         <p id="resend-message" class="hidden">OTP has been resent!</p>
-    </form>
-    
+      </form>
 
       <div id="loading-indicator" class="hidden"></div>
     </div>
   </div>
+
   <script>
-    // Check if OTP was sent
+    const loginForm = document.getElementById('login-form');
+    const otpForm = document.getElementById('otp-form');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const resendOtpBtn = document.getElementById('resend-btn');
+    const backToLoginBtn = document.getElementById('back-to-login-btn');
+    const resendMessage = document.getElementById('resend-message');
+
+    function showLoading() {
+      loadingIndicator.classList.remove('hidden');
+    }
+
+    function hideLoading() {
+      loadingIndicator.classList.add('hidden');
+    }
+
+    // Show loading indicator on login form submission
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      showLoading();
+      loginForm.submit();
+    });
+
+    // Show loading indicator on OTP form submission
+    otpForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      showLoading();
+      otpForm.submit();
+    });
+
+    // Show login form when 'Back to Login' is clicked
+    backToLoginBtn.addEventListener('click', () => {
+      otpForm.classList.add('hidden');
+      loginForm.classList.remove('hidden');
+    });
+
+    // Handle OTP resend button click
+    resendOtpBtn.addEventListener('click', () => {
+      showLoading();
+    });
+
+    // Check if OTP was sent and show appropriate form
     {% if otp_sent %}
-        document.getElementById('login-form').classList.add('hidden');
-        document.getElementById('otp-form').classList.remove('hidden');
+      loginForm.classList.add('hidden');
+      otpForm.classList.remove('hidden');
+    {% endif %}
+
+    // Show OTP resend success message if applicable
+    {% if success_message %}
+      resendMessage.classList.remove('hidden');
     {% endif %}
   </script>
-  <script src="{% static 'accounts/2fa.js' %}"></script>
 </body>
 </html>
