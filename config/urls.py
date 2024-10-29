@@ -3,6 +3,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),  # Make sure to include 'accounts.urls'
-    path('logout/', include('django.contrib.auth.urls')),  # Optional if using logout view
+    path('accounts/', include('accounts.urls')),
+    path('dashboard/', include('data.urls')),
+    path('logout/', include('django.contrib.auth.urls')),
 ]
