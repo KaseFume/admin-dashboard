@@ -17,6 +17,7 @@ body{
     padding: 2% 4%;
     overflow-y:auto ;
 }
-a{
+a {
     text-decoration: none;
+    color: inherit; /* Inherits the color from the parent element */
 }

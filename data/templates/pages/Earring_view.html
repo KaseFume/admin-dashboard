@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data-View | EARRING</title>
+    <link rel="stylesheet" href="css/table.css">
+    <link rel="stylesheet" href="css/image slider/image slider.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="list-container">
+        <div class="first-container">
+            <span class="product-category"><i class="fas fa-circle-notch"></i> Earring</span>
+            <div class="table-tools">
+                <div class="search-tools">
+                    <form>
+                        <input type="text" placeholder="Search.." name="search">
+                        <button type="submit"><i class="fa fa-search"></i></button>
+                    </form>
+                </div>
+                <div class="dropdown">
+                    <button class="dropdown-btn">Sort by <span class="arrow">&#9662;</span></button>
+                    <ul class="dropdown-menu">
+                      <li>ID</li>
+                      <li>Name</li>
+                    </ul>
+                  </div>
+                  
+                  <div class="dropdown">
+                    <button class="dropdown-btn">Rows Per Column <span class="arrow">&#9662;</span></button>
+                    <ul class="dropdown-menu">
+                      <li>10</li>
+                      <li>30</li>
+                      <li>50</li>
+                    </ul>
+                  </div>
+                  
+            </div>
+        </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <td>ID</td>
+                            <td>Name</td>
+                            <td>Image Preview</td>
+                            <td>Purchased</td>
+                            <td>Details</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>R-1232</td>
+                        <td class="truncate">Black Tea is very nice Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti temporibus laborum eum dolorem odit, dolores impedit quod quae repudiandae laudantium ad tenetur illum officiis odio est consequuntur veniam distinctio optio.</td>
+                        <td>
+                            <div class="image-slider">
+                            <button class="slider-btn prev-btn">&lt;</button>
+                            <div class="slider-container">
+                              <img src="img/images.png" alt="Image 1" />
+                              <img src="img/images.png" alt="Image 2" />
+                              <img src="img/background.avif" alt="Image 3" />
+                            </div>
+                            <button class="slider-btn next-btn">&gt;</button>
+                          </div>
+                        </td>
+                        <td><input type="checkbox" checked disabled></td>
+                        <td><a target="_blank" href="detail_view/product-detail.html"><button>View Details</button></a></td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+        <div class="pagination">
+            <a href="#" class="prev">&laquo; Prev</a>
+            <a href="#" class="page active">1</a>
+            <a href="#" class="page">2</a>
+            <a href="#" class="page">3</a>
+            <a href="#" class="next">Next &raquo;</a>
+          </div>
+    </div>
+    <script src="js/image-slider.js"></script>
+    <script src="js/script-list.js"></script>
+</body>
+</html>
+{% endblock %}

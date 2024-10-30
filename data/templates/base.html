@@ -30,25 +30,22 @@
     <div class="container">
         <div class="sidebar">
             <ul class="no-bullets">
-                <a href=""></a><li class="sidebar-items" onclick="navigateTo('home')">Home</li>
-                <li class="sidebar-items" id="data-view">
-                    Data View
-                    <ul class="dropdown-menu no-bullets" id="data-view-menu">
-                        <li onclick="navigateTo('Earring_view')">Earring</li>
-                        <li onclick="navigateTo('EPRset_view')">EPR Set</li>
-                        <li onclick="navigateTo('Handchain_view')">Handchain</li>
-                        <li onclick="navigateTo('Necklace_view')">Necklace</li>
-                        <li onclick="navigateTo('Pendant_view')">Pendant</li>
-                        <li onclick="navigateTo('Ring_view')">Ring</li>
+                <a href="{% url 'data:home' %}"><li class="sidebar-items">Home</li></a>
+                <li class="sidebar-items">Data View
+                    <ul class="dropdown-menu no-bullets">
+                        <a href="{% url 'data:earrings' %}"><li>Earring</li></a>
+                        <a href="{% url 'data:eprset' %}"><li>EPR Set</li></a>
+                        <a href="{% url 'data:handchain' %}"><li>Handchain</li></a>
+                        <a href="{% url 'data:necklace' %}"><li>Necklace</li></a>
+                        <a href="{% url 'data:pendant' %}"><li>Pendant</li></a>
+                        <a href="{% url 'data:ring' %}"><li>Ring</li></a>
                     </ul>
                 </li>
-                <li class="sidebar-items" onclick="navigateTo('form')">Add/Update</li>
-                <li class="sidebar-items" onclick="navigateTo('single-view')">Single View</li>
-                <li class="sidebar-items" id="utilities" onclick="navigateTo('setting')">
-                    Utilities
-                </li>
-                <a href=""><li class="sidebar-items">Log-out</li></a>
-            </ul>
+                <a href="{% url 'data:form' %}"><li class="sidebar-items">Add/Update</li></a>
+                <a href="{% url 'data:single_view' %}"><li class="sidebar-items">Single View</li></a>
+                <a href="{% url 'data:settings' %}"><li class="sidebar-items">Utilities</li></a>
+                <li class="sidebar-items"><a href="#">Log-out</a></li>
+            </ul>                        
         </div>
         <div id="super-container">
             {% block content %}
@@ -60,7 +57,5 @@
     <!-- Sidebar Dropdown Script -->
     <script src="{% static 'js/dropdown-sidebar.js' %}"></script>
     <script src="{% static 'js/hamburger.js' %}"></script>
-    <script src="{% static 'js/spa.js' %}"></script>
-    <script src="{% static 'js/script-list.js' %}"></script>
 </body>
 </html>

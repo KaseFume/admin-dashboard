@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="css/form.css">
+<div class="form-container">
+    <div class="form-header">
+        <p>View Product Details</p>
+        <button type="button" id="editButton">Edit</button>
+    </div>
+    <div class="input-wrapper">
+        <label for="numberInput">Product ID:&nbsp;</label>
+        <div class="input-group">
+            <select id="options">
+                <option value="R-">R-</option>
+                <option value="H-">H-</option>
+                <option value="EPR-">EPR-</option>
+                <option value="P-">P-</option>
+                <option value="E-">E-</option>
+                <option value="N-">N-</option>
+            </select>
+            <input type="number" id="numberInput" placeholder="Enter number" min="0">
+            <button type="button" class="enter-button">Enter</button>
+        </div>
+    </div>
+    <div class="form-container-2">
+        <form id="productForm" enctype="multipart/form-data">
+            <div class="grid-container">
+                <div class="grid-item-2">
+                    <label for="name">Name: &nbsp;</label>
+                    <div class="data-show">
+                    <span id="nameDisplay">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt nulla quas, unde minus sint accusantium voluptatem, sequi ipsa nemo voluptatum consectetur, provident blanditiis illo eius omnis vitae deleniti tempora. Quod!</span>
+                </div>
+                </div>
+                <div class="grid-item-2">
+                    <label for="total_weight">Total Weight:&nbsp;</label>
+                    <div class="data-show">
+                    <span id="totalWeightDisplay">Existing Total Weight</span>
+                </div>
+                </div>
+                <div class="grid-item-2">
+                    <label for="gold_net_weight">Gold Net Weight:&nbsp;</label>
+                    <div class="data-show">
+                    <span id="goldNetWeightDisplay">Existing Gold Net Weight</span>
+                </div>
+                </div>
+                <div class="grid-item-2">
+                    <label for="gems_1">Gems 1:&nbsp;</label>
+                    <div class="data-show">
+                    <span id="gems1Display">Existing Gem 1</span>
+                </div>
+                </div>
+                <div class="grid-item-2">
+                    <label for="gems_2">Gems 2:&nbsp;</label>
+                    <div class="data-show">
+                    <span id="gems2Display">Existing Gem 2</span>
+                </div>
+                </div>
+                <div class="grid-item-2">
+                    <label for="gems_3">Gems 3:&nbsp;</label>
+                    <div class="data-show">
+                    <span id="gems3Display">Existing Gem 3</span>
+                </div>
+                </div>
+                <div class="grid-item-2">
+                    <label for="a_ywrt">A Ywrt:&nbsp;</label>
+                    <div class="data-show">
+                    <span id="aYwrtDisplay">Existing A Ywrt</span>
+                </div>
+                </div>
+                <div class="grid-item-2">
+                    <label for="latkha">Latkha:&nbsp;</label>
+                    <div class="data-show">
+                    <span id="latkhaDisplay">Existing Latkha</span>
+                </div>
+                </div>
+                <div class="grid-item price-item">
+                    <label for="price">Price:&nbsp;</label>
+                    <span id="priceDisplay">Existing Price &nbsp;</span>
+                    </span>
+                    <span id="currencyDisplay">MMK</span>
+                </div>                        
+                <div class="grid-item purchased-checkbox">
+                    <label for="purchased">Purchased: &nbsp;    </label>
+                    <span id="purchasedDisplay">Yes</span>
+                </div>
+                <div class="grid-item">
+                    <label for="lastUpdated">Last Updated Time: </label>
+                    <span id="lastUpdatedDisplay"></span>
+                </div>
+            </div>
+    
+            <div id="imageUploadContainer">
+                <label>Uploaded Images:</label><br>
+                <div id="imageDisplayContainer">
+                    <img src="img/images.png" alt="Image 1" style="max-width: 200px; margin-top: 10px;">
+                    <img src="img/images.png" alt="Image 2" style="max-width: 200px; margin-top: 10px;">
+                    <img src="img/images.png" alt="Image 2" style="max-width: 200px; margin-top: 10px;">
+                    <img src="img/images.png" alt="Image 2" style="max-width: 200px; margin-top: 10px;">
+                    <img src="img/images.png" alt="Image 2" style="max-width: 200px; margin-top: 10px;">
+                    <img src="img/images.png" alt="Image 2" style="max-width: 200px; margin-top: 10px;">
+                    <img src="img/images.png" alt="Image 2" style="max-width: 200px; margin-top: 10px;">
+                    <img src="img/images.png" alt="Image 2" style="max-width: 200px; margin-top: 10px;">
+                    <img src="img/images.png" alt="Image 2" style="max-width: 200px; margin-top: 10px;">
+                    <img src="img/images.png" alt="Image 2" style="max-width: 200px; margin-top: 10px;">
+                    <!-- Add more images as needed -->
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="js/update-form.js"></script>
+<script>
+    const numberInput = document.getElementById('numberInput');
+
+// Optional: Add validation to only allow numbers
+numberInput.addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+});
+</script>
+{% endblock %}

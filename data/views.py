@@ -8,6 +8,35 @@ from django.contrib import messages
 def admin_dashboard(request):
     return render(request, 'base.html')
 
+def home(request):
+    return render(request,'pages/home.html')
+
+def earrings(request):
+    return render(request, 'pages/earring_view.html')
+
+def eprset(request):
+    return render(request, 'pages/eprset.html')
+
+def handchain(request):
+    return render(request, 'pages/handchain.html')
+
+def necklace(request):
+    return render(request, 'pages/necklace.html')
+
+def pendant(request):
+    return render(request, 'pages/pendant.html')
+
+def ring(request):
+    return render(request, 'pages/ring.html')
+
+def form_view(request):
+    return render(request, 'pages/form.html')
+
+def settings(request):
+    return render(request, 'pages/setting.html')
+
+def single_view(request):
+    return render(request, 'pages/single-view.html')
 
 def logout_view(request):
     logout(request)  # Logout the user

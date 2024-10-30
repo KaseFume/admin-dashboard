@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="css/form.css">
+<div class="form-container">
+    <p>Add/Update Form</p>
+    <div class="centre-wrapper">
+    <div class="input-wrapper">
+        <label for="numberInput">Enter Product ID:&nbsp;</label>
+        <div class="input-group">
+            <select id="options">
+                <option value="R-">R-</option>
+                <option value="H-">H-</option>
+                <option value="EPR-">EPR-</option>
+                <option value="P-">P-</option>
+                <option value="E-">E-</option>
+                <option value="N-">N-</option>
+            </select>
+            <input type="number" id="numberInput" placeholder="Enter number" min="0">
+            <button type="button" class="enter-button">Enter</button>
+        </div>
+    </div>
+</div>
+<div class="instruction">
+    <p>Instruction <br>
+        1. To create a new product, select the Product Type: <br>
+        - Ring [R-] <br>
+        - Earring [E-] <br>
+        - EPR set [EPR-] <br>
+        - Pendant [P-] <br>
+        - Handchain [H-] <br>
+        - Necklace [N-] <br>
+        2. Enter the new ID number to add a new product (OR) enter the co-existing ID number to update. <br>
+        3. Click the Enter button to proceed. <br>
+        4. You will be directed to the respective form.
+    </p>
+</div>        
+</div>
+<script src="js/number-validation.js"></script>
+{% endblock %}

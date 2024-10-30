@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<link rel="stylesheet" href="css/setting.css">
+<div class="setting-container">
+    <h2>Utilities</h2>
+    <p>Manage your application settings and data below:</p>
+
+    <ul class="utility-list">
+        <li class="utility-card" id="auth-control">
+            <h3>Auth-Control</h3>
+            <p>Manage user authentication settings.</p>
+            <button class="toggle-button" onclick="toggleUserManagementDetails()">Manage Users</button>
+        <div class="details" id="user-management-details">
+            <button onclick="addNewUser()">Add New User</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>Email</th>
+                        <th>Last Login Session</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="user-table-body">
+                    <tr>
+                        <td>john_doe</td>
+                        <td>
+                            <span id="password-1">password123</span>
+                            <span class="hide-icon" onclick="togglePassword('password-1')">👁️</span>
+                        </td>
+                        <td>john@example.com</td>
+                        <td>2023-10-01 12:30 PM</td>
+                        <td>
+                            <button onclick="editUser('john_doe')">Edit</button>
+                            <button onclick="deleteUser('john_doe')">Delete</button>
+                        </td>
+                    </tr>
+                    <!-- Additional user rows can be added here -->
+                </tbody>
+            </table>
+        </div>
+        </li>
+
+        <li class="utility-card" id="export-data">
+            <h3>Export JSON/XLSV</h3>
+            <p>Export data in JSON or XLSV format.</p>
+            <button onclick="exportData()">Export Data</button>
+        </li>
+
+        <li class="utility-card" id="save-local">
+            <h3>Save in Local</h3>
+            <p>Save data locally on your device. (Image Only)</p>
+            <button onclick="saveData()">Save Now</button>
+        </li>
+
+        <li class="utility-card" id="contact-dev">
+            <h3>Contact Dev</h3>
+            <p>Reach out to the development team for support.</p>
+            <button class="toggle-button" onclick="toggleContactDetails()">Contact Us</button>
+        <div class="details" id="contact-details">
+            <p>If you have any questions or need support, please reach out to our development team at:</p>
+            <p>Email: devminthant@yahoo.com</p>
+            <p>Phone: +959899945223</p>
+        </div>
+    </li>
+</ul>
+</div>
+</li>
+</ul>
+<script src="js/setting.js"></script>
+{% endblock %}
