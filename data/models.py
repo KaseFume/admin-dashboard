@@ -1,8 +1,16 @@
-# models.py
 from django.db import models
 from .storage import ClassSpecificStorage  # Import the custom storage class
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.db.models.signals import post_delete, pre_save
+from django.dispatch import receiver
+
+def get_upload_path(instance, filename):
+    """Generate upload path dynamically based on the product type."""
+    model_name = instance.content_type.model  # Get the model name (e.g., 'necklace')
+    return f'{model_name}/{instance.object_id}-{filename}'
+
+
 class Necklace(models.Model):
     id = models.CharField(max_length=255, default="N-", primary_key=True)
     name = models.CharField(max_length=255)
@@ -86,53 +94,59 @@ def get_default_necklace_content_type_id():
     return ContentType.objects.get(app_label='data', model='necklace').id
 
 class Image(models.Model):
-    # Restrict content_type to only the six jewelry models
     content_type = models.ForeignKey(
         ContentType,
         on_delete=models.CASCADE,
         limit_choices_to={
-            'model__in': [
-                'necklace', 'eprset', 'earring', 'ring', 'handchain', 'pendant'
-            ]
+            'model__in': ['necklace', 'eprset', 'earring', 'ring', 'handchain', 'pendant']
         },
-        default=get_default_necklace_content_type_id  # Use the ID here
+        default=get_default_necklace_content_type_id
     )
     object_id = models.CharField(max_length=255)
     product = GenericForeignKey('content_type', 'object_id')
 
-    # File field with dynamic path based on content type
     image = models.FileField(
-        upload_to='get_upload_path',  # Placeholder for the upload path
+        upload_to=get_upload_path,
         storage=ClassSpecificStorage(location='images/'),
         blank=True
     )
 
-    def get_upload_path(self, filename):
-        """Generate upload path dynamically based on the product type."""
-        model_name = self.content_type.model  # Get the model name (e.g., 'necklace')
-        return f'images/{model_name}/{filename}'
-
     def save(self, *args, **kwargs):
-        # Ensure the content_type is set correctly
         if not self.content_type:
             self.content_type = ContentType.objects.get(app_label='data', model='necklace')
 
-        # Auto-generate a unique image name based on the product type and object ID
+        # Auto-generate a unique image name
         image_count = Image.objects.filter(
             content_type=self.content_type, object_id=self.object_id
         ).count()
-        self.image.name = f"{self.object_id}-{image_count + 1}.jpg"
-        
-        # Update the upload path here
-        self.image.upload_to = self.get_upload_path(self.image.name)
-        
-        super().save(*args, **kwargs)
+        self.image.name = f"{image_count + 1}.jpg"
 
-    def delete(self, *args, **kwargs):
-        # Ensure the image file is deleted from storage when the record is deleted
-        if self.image and self.image.storage.exists(self.image.name):
-            self.image.storage.delete(self.image.name)
-        super().delete(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Image for {self.product}"
+
+
+# Signal to delete image file from storage when the Image model instance is deleted
+@receiver(post_delete, sender=Image)
+def delete_image_file(sender, instance, **kwargs):
+    """Delete the file from storage when the Image instance is deleted."""
+    if instance.image and instance.image.storage.exists(instance.image.name):
+        instance.image.storage.delete(instance.image.name)
+
+
+# Optional: Handle image replacement to delete the old file before saving a new one
+@receiver(pre_save, sender=Image)
+def delete_old_image_on_change(sender, instance, **kwargs):
+    """Delete old image file if the image field is being replaced."""
+    if not instance.pk:
+        return  # New instance, no replacement needed
+
+    try:
+        old_image = Image.objects.get(pk=instance.pk).image
+    except Image.DoesNotExist:
+        return  # Old image doesn't exist, no action needed
+
+    # If the new image is different from the old one, delete the old one
+    if old_image and old_image != instance.image:
+        old_image.storage.delete(old_image.name)
