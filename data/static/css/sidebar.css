@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
+
+.no-bullets {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    transition: all 0.3s ease; /* Smooth transition for flex layout changes */
+}
+
+.sidebar {
+    width: 20%; /* Default width */
+    background: #ffffff;
+    height: 100vh;
+    display: flex;
+    padding-top: 0vh;
+    justify-content: center;
+    box-shadow: 4px 0 8px 0 #535353;
+    overflow-y: scroll;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed {
+    transform: translateX(-100%); /* Move sidebar out of view */
+}
+
+.sidebar ul {
+    width: 100%; /* Makes the list span the entire width */
+}
+
+.sidebar-items {
+    font-family: Poppins, Roboto;
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: #000000;
+    margin: 0px 5px 5px 0px;
+    padding: 10px;
+    border-radius: 0px 10px 10px 0px;
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+.sidebar-items:hover {
+    background-color: #eeeeee;
+}
+
+/* Dropdown Styles */
+.sidebar .dropdown-menu {
+    display: none;
+    padding-left: 20px;
+}
+
+.sidebar .dropdown-menu li {
+    padding: 8px 0;
+    font-size: 0.9rem;
+    color: #000000;
+}
+
+.sidebar .dropdown-menu li:hover {
+    color: #303030;
+}
+
+/* Hide scrollbar for WebKit browsers (Chrome, Safari, Edge) */
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar in Firefox */
+.sidebar {
+    scrollbar-width: none;  /* Firefox-specific property */
+}
+
+/* Optional: Prevent accidental horizontal scrolling */
+.sidebar {
+    overflow-x: hidden;
+}
+
+/* Adjust styles for smaller screens */
+
+
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 25vw;
+    }
+    .sidebar-items {
+        font-size: 1.4rem;
+    }
+    .sidebar .dropdown-menu li {
+        font-size: 1.1rem;
+    }
+}
+@media (max-width: 768px) {
+    .sidebar {
+        width: 30vw;
+    }
+    .sidebar-items {
+        font-size: 1rem;
+    }
+    .sidebar .dropdown-menu li {
+        font-size: 0.8rem;
+    }
+}
+
+/* Adjust margin when sidebar is collapsed */
+.sidebar.collapsed + .list-container {
+    margin-left: 0; /* Full width when sidebar is collapsed */
+}
+.sidebar.collapsed{
+    width: 0;
+}
+.hamburger {
+    background-color: transparent; /* Transparent background */
+    border: none; /* No border */
+    cursor: pointer; /* Pointer on hover */
+    padding: 10px; /* Add some padding */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition */
+    border-radius: 4px; /* Rounded corners */
+}
+
+.hamburger:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Light background on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.icon {
+    color: #ffffff; /* Icon color */
+    font-size: 24px; /* Size of the icon */
+    transition: color 0.3s ease; /* Smooth color transition */
+}
+
+.hamburger:hover .icon {
+    color: #f1f1f1; /* Change icon color on hover */
+}
+

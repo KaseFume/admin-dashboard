@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Panel{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/adminpanel.css' %}">
+    <link rel="stylesheet" href="{% static 'css/top-bar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+    <link rel="stylesheet" href="{% static 'css/setting.css' %}">
+    <link rel="stylesheet" href="{% static 'css/effects.css' %}"> <!-- New CSS for effects -->
+</head>
+<body>
+    <header>
+        <div class="top-bar">
+            <div class="logo-text">
+                <span>Su Yadanar Diamond and Jewellery Shop</span>
+            </div>
+            <button class="hamburger" id="hamburger">
+                <i class="fas fa-bars icon"></i>
+            </button>
+        </div>
+    </header>
+    <div class="container">
+        <div class="sidebar">
+            <ul class="no-bullets">
+                <a href=""></a><li class="sidebar-items" onclick="navigateTo('home')">Home</li>
+                <li class="sidebar-items" id="data-view">
+                    Data View
+                    <ul class="dropdown-menu no-bullets" id="data-view-menu">
+                        <li onclick="navigateTo('Earring_view')">Earring</li>
+                        <li onclick="navigateTo('EPRset_view')">EPR Set</li>
+                        <li onclick="navigateTo('Handchain_view')">Handchain</li>
+                        <li onclick="navigateTo('Necklace_view')">Necklace</li>
+                        <li onclick="navigateTo('Pendant_view')">Pendant</li>
+                        <li onclick="navigateTo('Ring_view')">Ring</li>
+                    </ul>
+                </li>
+                <li class="sidebar-items" onclick="navigateTo('form')">Add/Update</li>
+                <li class="sidebar-items" onclick="navigateTo('single-view')">Single View</li>
+                <li class="sidebar-items" id="utilities" onclick="navigateTo('setting')">
+                    Utilities
+                </li>
+                <a href=""><li class="sidebar-items">Log-out</li></a>
+            </ul>
+        </div>
+        <div id="super-container">
+            {% block content %}
+            <!-- Content will be loaded here -->
+            {% endblock %}
+        </div>
+    </div>
+
+    <!-- Sidebar Dropdown Script -->
+    <script src="{% static 'js/dropdown-sidebar.js' %}"></script>
+    <script src="{% static 'js/hamburger.js' %}"></script>
+    <script src="{% static 'js/spa.js' %}"></script>
+    <script src="{% static 'js/script-list.js' %}"></script>
+</body>
+</html>

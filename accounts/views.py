@@ -6,7 +6,7 @@ from django.core.mail import send_mail
 import random
 from django.conf import settings
 from django.http import JsonResponse
-
+from django.urls import reverse
 
 otp_storage = {}
 
@@ -55,7 +55,7 @@ def verify_otp(request):
             if user:
                 login(request, user)  # Log the user in
                 otp_storage.pop(email)  # Remove OTP from memory
-                return HttpResponse('Logged in successfully!')
+                return redirect(reverse('data:admin_dashboard'))  
             else:
                 return render(request, 'accounts/2fa.html', {
                     'error_message': 'User not found.', 'otp_sent': True

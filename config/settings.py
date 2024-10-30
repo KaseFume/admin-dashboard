@@ -143,3 +143,8 @@ STATICFILES_DIRS = [
 ]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# settings.py
+LOGIN_REDIRECT_URL = '/data/dashboard/'  # Redirect after login
+LOGIN_URL = '/accounts/send-otp/'  # Default login URL
+LOGOUT_REDIRECT_URL = '/accounts/login/'  # Redirect after logout

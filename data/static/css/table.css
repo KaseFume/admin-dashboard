@@ -1,0 +1,396 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    font-family: 'Poppins', 'Roboto', sans-serif;
+    box-sizing: border-box; /* Ensure padding and borders are included in width/height */
+}
+
+
+.list-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 2%;
+    flex-grow: 1; /* Allow it to grow and fill available space */
+    transition: margin-left 0.3s ease; /* Smooth transition when sidebar is collapsed */
+}
+
+/* Header Section (Top Section) */
+.first-container {
+    display: flex;
+    border-radius: 10px;
+    border: #C3B1E1 2px solid;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+}
+
+/* Pagination Section */
+.pagination {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+}
+
+.pagination a {
+    text-decoration: none;
+    color: #333333;
+    padding: 8px 12px;
+    margin: 0 5px;
+    border: 1px solid #C3B1E1;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.pagination a.active {
+    background-color: #705DC8;
+    color: #ffffff;
+    border-color: #C3B1E1;
+}
+
+.pagination a:hover {
+    background-color: #705DC8;
+    color: #ffffff;
+}
+
+/* Dropdown */
+.list-container .dropdown {
+    position: relative;
+    display: inline-block;
+    margin-right: 15px;
+    padding: 10px 0;
+}
+
+/* Dropdown Button */
+.list-container .dropdown-btn {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.arrow {
+    font-size: 12px;
+}
+
+.list-container .dropdown-btn:hover {
+    background-color: #e9ecef;
+    border-color: #ccc;
+}
+
+/* Dropdown Menu */
+.list-container .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    min-width: 150px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    margin-top: -10px;
+    z-index: 1000;
+    padding: 0;
+    list-style: none;
+    border: 1px solid #ddd;
+
+    /* Hidden initially for animation */
+    opacity: 0;
+    transform: scale(0.95); /* Start with a slight shrink */
+    transition: opacity 0.2s ease, transform 0.2s ease; 
+    pointer-events: none; /* Prevents clicks when hidden */
+}
+
+/* Dropdown Menu Items */
+.list-container .dropdown-menu li {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.list-container .dropdown-menu li:hover {
+    background-color: #f1f3f4;
+}
+
+/* Show the Menu with Animation */
+.list-container .dropdown.show .dropdown-menu {
+    opacity: 1;
+    transform: scale(1); /* Grows to full size */
+    pointer-events: auto; /* Allows interaction */
+}
+
+/* Tools Container */
+.table-tools {
+    display: flex;
+    flex-wrap: wrap; /* Ensure it adjusts nicely on smaller screens */
+}
+
+.search-tools {
+    margin-right: 10px;
+    padding: 10px 0;
+}
+
+/* Media Queries for Responsive Design */
+
+/* Large Laptops (1440px and above) */
+@media (min-width: 1440px) {
+    .first-container {
+        padding: 20px;
+    }
+
+    .list-container .dropdown-btn {
+        padding: 8px 16px;
+    }
+
+    .pagination a {
+        padding: 10px 16px;
+    }
+
+    .table-tools {
+        display: flex;
+        align-items: center;
+    }
+}
+
+/* Laptops (1024px to 1439px) */
+@media (min-width: 1024px) and (max-width: 1439px) {
+    .list-container {
+        padding: 3%;
+    }
+
+    .first-container {
+        flex-direction: row;
+    }
+
+    .pagination {
+        justify-content: flex-end;
+    }
+
+    .list-container .dropdown {
+        margin-right: 15px;
+    }
+
+    .table-tools {
+        display: flex;
+        align-items: center;
+    }
+}
+
+/* Tablets (768px to 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .list-container {
+        padding: 3%;
+    }
+
+    .first-container {
+        flex-direction: row; /* Aligns elements horizontally */
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .pagination {
+        justify-content: flex-end;
+    }
+
+    .list-container.dropdown {
+        margin-right: 15px;
+        width: auto; /* Ensures dropdowns stay inline */
+        margin-bottom: 0;
+    }
+
+    .list-container .dropdown-btn {
+        padding: 8px 12px;
+    }
+
+    .table-tools {
+        display: flex;
+        align-items: center;
+    }
+
+    .search-tools {
+        margin-right: 10px;
+        padding: 10px 0;
+    }
+}
+
+.first-container span.product-category {
+    font-size: 2rem;
+}
+
+/* Table Container */
+.table-container {
+    display: flex; /* Keep as flex to use the full height */
+    flex-direction: row; /* Set to row for horizontal growth */
+    width: 100%;
+    max-height: 400px; /* This controls the maximum height */
+    overflow-y: auto; /* Enable scrolling when content overflows */
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+/* Table Styling */
+.table-container table {
+    flex-grow: 1; /* Allow table to grow and fill the container horizontally */
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+}
+
+/* Sticky Header */
+.table-container thead {
+    color: #ffffff;
+}
+
+.table-container thead tr {
+    position: sticky;
+    top: 0; /* Stick to the top during scroll */
+    z-index: 2; /* Ensure it stays above other content */
+    background-color: #705DC8; /* Blue header */
+}
+
+/* Header Cells */
+.table-container thead td {
+    padding: 12px 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Table Body Rows */
+.table-container tbody td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    color: #333;
+}
+
+/* Alternating Row Colors */
+.table-container tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.table-container tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+/* Checkbox Styling */
+.table-container input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: not-allowed;
+    accent-color: #705DC8;
+}
+
+/* Button Styling */
+.table-container button {
+    padding: 8px 12px;
+    background-color: #705DC8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.table-container button:hover {
+    background-color: #9A8FDD;
+}
+
+.table-container tbody td:nth-child(1),.table-container thead td:nth-child(1)  {
+    width: 15%;
+    text-align: center;
+}
+
+.table-container tbody td:nth-child(2),.table-container thead td:nth-child(2){
+    width: 30%;
+    text-align: center;
+}
+
+/* Image Preview Placeholder for Table Body Only */
+.table-container tbody td:nth-child(3) {
+    width: 30%;
+    height: 10rem;
+    border-radius: 4px;
+    text-align: center;
+    vertical-align: middle;
+    color: #999;
+    font-style: italic;
+}
+
+.table-container tbody td:nth-child(4) {
+    width: 10%;
+    text-align: center;
+}
+
+.table-container thead td:nth-child(4),
+.table-container thead td:nth-child(3) {
+    text-align: center;
+}
+
+.table-container tbody td:nth-child(5) {
+    width: 15%;
+}
+
+/* Responsive Adjustments for Tablets */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .table-container table {
+        font-size: 0.8rem;
+    }
+
+    .first-container span.product-category {
+        font-size: 1rem;
+    }
+}
+.table-container .image-slider {
+    position: relative;
+    overflow: hidden;
+    width: 100%; /* Adjust container size as needed */
+    margin: 0 auto;
+}
+
+.table-container .slider-container {
+    display: flex;
+    transition: transform 0.3s ease-in-out;
+    width: 100%; /* This width is fixed for smooth transitions */
+    height: 100%;
+    margin: 0 auto;
+}
+
+.table-container .slider-container img {
+    width: 100%; /* Ensure each image takes full width of the container */
+    object-fit: cover;
+    object-position: center;
+    flex: 0 0 100%
+}
+
+/* Button styling */
+.table-container .slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 24px;
+    z-index: 1;
+}
+
+.table-container .prev-btn {
+    left: 5%;
+}
+
+.table-container .next-btn {
+    right: 5%;
+}
+
+
