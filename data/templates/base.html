@@ -15,6 +15,10 @@
     <link rel="stylesheet" href="{% static 'css/form.css' %}">
     <link rel="stylesheet" href="{% static 'css/setting.css' %}">
     <link rel="stylesheet" href="{% static 'css/effects.css' %}"> <!-- New CSS for effects -->
+    {% block extra_css %}
+    
+    {% endblock extra_css %}
+
 </head>
 <body>
     <header>
@@ -31,8 +35,8 @@
         <div class="sidebar">
             <ul class="no-bullets">
                 <a href="{% url 'data:home' %}"><li class="sidebar-items">Home</li></a>
-                <li class="sidebar-items">Data View
-                    <ul class="dropdown-menu no-bullets">
+                <li id="data-view" class="sidebar-items">Data View
+                    <ul id="data-view-menu" class="dropdown-menu no-bullets" style="display: none;">
                         <a href="{% url 'data:earrings' %}"><li>Earring</li></a>
                         <a href="{% url 'data:eprset' %}"><li>EPR Set</li></a>
                         <a href="{% url 'data:handchain' %}"><li>Handchain</li></a>
@@ -44,9 +48,9 @@
                 <a href="{% url 'data:form' %}"><li class="sidebar-items">Add/Update</li></a>
                 <a href="{% url 'data:single_view' %}"><li class="sidebar-items">Single View</li></a>
                 <a href="{% url 'data:settings' %}"><li class="sidebar-items">Utilities</li></a>
-                <li class="sidebar-items"><a href="#">Log-out</a></li>
-            </ul>                        
-        </div>
+                <li class="sidebar-items"><a href="">Log-out</a></li>
+            </ul>
+        </div>        
         <div id="super-container">
             {% block content %}
             <!-- Content will be loaded here -->
@@ -55,7 +59,10 @@
     </div>
 
     <!-- Sidebar Dropdown Script -->
-    <script src="{% static 'js/dropdown-sidebar.js' %}"></script>
+    <script src="{% static 'js/dropdown_sidebar.js' %}"></script>
     <script src="{% static 'js/hamburger.js' %}"></script>
+    {% block extra_js %}
+
+    {% endblock extra_js %}
 </body>
 </html>

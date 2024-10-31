@@ -8,10 +8,11 @@ function toggleDropdown(itemId, menuId) {
       event.stopPropagation(); // Prevent conflicts with global click handlers
       menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
     });
+  } else {
+    console.error("Item or menu not found:", item, menu);
   }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   toggleDropdown('data-view', 'data-view-menu');
-  toggleDropdown('utilities', 'utilities-menu');
 });

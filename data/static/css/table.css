@@ -76,7 +76,9 @@
     gap: 5px;
     transition: background-color 0.2s ease, border-color 0.2s ease;
 }
-
+.list-container .dropdown.show .dropdown-menu {
+    display: block;
+}
 .arrow {
     font-size: 12px;
 }
@@ -392,5 +394,3 @@
 .table-container .next-btn {
     right: 5%;
 }
-
-

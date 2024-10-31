@@ -1,2 +1,4 @@
 xoug nehy ieln pxuk
 suppraskit1@gmail.com
+
+{% url 'product_detail' item.id %}

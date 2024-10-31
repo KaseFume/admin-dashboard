@@ -1,76 +1,44 @@
-// script-list.js
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("List page script initialized");
 
-// Function to initialize dropdown and truncate logic
-function initializeListPage() {
-    console.log('Script LISTTT IS RUNNING');
+    // Dropdown Logic
+    const dropdownButtons = document.querySelectorAll(".dropdown-btn");
 
-    const container = document.querySelector('.list-container');
-    if (!container) return;
+    dropdownButtons.forEach(button => {
+        button.addEventListener("click", function (event) {
+            event.stopPropagation(); // Prevent event from bubbling up to document
 
-    // Dropdown logic
-    container.querySelectorAll('.dropdown-btn').forEach(btn => {
-        btn.addEventListener('click', function (event) {
-            event.stopPropagation();
-            const dropdown = this.closest('.dropdown');
-            dropdown.classList.toggle('show');
+            const dropdownContainer = this.parentElement; // Get the parent dropdown container
+            dropdownContainer.classList.toggle("show"); // Toggle 'show' on the entire dropdown container
 
             // Close other dropdowns
-            container.querySelectorAll('.dropdown').forEach(otherDropdown => {
-                if (otherDropdown !== dropdown) {
-                    otherDropdown.classList.remove('show');
+            document.querySelectorAll(".dropdown").forEach(dropdown => {
+                if (dropdown !== dropdownContainer) {
+                    dropdown.classList.remove("show"); // Remove 'show' class from other dropdowns
+                    console.log('Other dropdown closed');
                 }
             });
         });
     });
 
     // Close dropdowns on outside click
-    window.addEventListener('click', (e) => {
-        if (!e.target.closest('.list-container .dropdown')) {
-            container.querySelectorAll('.dropdown').forEach(dropdown => {
-                dropdown.classList.remove('show');
+    document.addEventListener("click", function (event) {
+        if (!event.target.closest(".dropdown")) {
+            document.querySelectorAll(".dropdown").forEach(dropdown => {
+                dropdown.classList.remove("show"); // Hide all dropdowns
+                console.log('Dropdown menu closed on outside click');
             });
         }
     });
 
-    // Close dropdown when clicking on an <li>
-    container.querySelectorAll('.dropdown li').forEach(item => {
-        item.addEventListener('click', (event) => {
-            const dropdown = event.target.closest('.dropdown');
-            if (dropdown) {
-                dropdown.classList.remove('show');
-            }
-        });
-    });
-
-    // Call text truncation logic
-    truncateText();
-}
-
-// Text truncation logic scoped to .list-container
-function truncateText() {
-    const container = document.querySelector('.list-container');
-    if (!container) return;
-
-    container.querySelectorAll('.truncate').forEach(cell => {
+    // Text Truncation Logic
+    const truncateElements = document.querySelectorAll(".truncate");
+    truncateElements.forEach(cell => {
         const originalText = cell.innerText;
-        const wordLength = originalText.replace(/[^a-zA-Z]/g, '').length;
+        const maxLength = 18;
 
-        if (wordLength > 18) {
-            const words = originalText.split(' ');
-            let truncatedText = '';
-            let lengthCount = 0;
-
-            for (const word of words) {
-                const cleanWord = word.replace(/[^a-zA-Z]/g, '');
-                if (lengthCount + cleanWord.length > 18) break;
-                truncatedText += word + ' ';
-                lengthCount += cleanWord.length;
-            }
-
-            cell.innerText = truncatedText.trim() + '...';
+        if (originalText.length > maxLength) {
+            cell.innerText = originalText.slice(0, maxLength) + "..."; // Truncate text
         }
     });
-}
-
-// Expose initializeListPage to be used in other scripts
-window.initializeListPage = initializeListPage;
+});
