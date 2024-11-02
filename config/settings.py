@@ -132,7 +132,7 @@ EMAIL_HOST_USER = 'suppraskit1@gmail.com'
 EMAIL_HOST_PASSWORD = 'xoug nehy ieln pxuk'
 
 import os
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Directory where static files will be collected
 STATIC_URL = '/static/'
 
@@ -141,8 +141,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Ensures static files are 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'accounts', 'static'),  # Add this for your custom static files
 ]
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
 
 # settings.py
 LOGIN_REDIRECT_URL = '/data/dashboard/'  # Redirect after login

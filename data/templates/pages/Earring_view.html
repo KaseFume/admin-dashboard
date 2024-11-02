@@ -46,15 +46,19 @@
                     <td>{{ item.id }}</td>
                     <td class="truncate">{{ item.name }}</td>
                     <td>
-                        <div class="image-slider">
-                            <button class="slider-btn prev-btn">&lt;</button>
-                            <div class="slider-container">
-                                {% for image in item.image_set.all %}
-                                <img src="{{ image.image.url }}" alt="Image for {{ item.name }}" />
-                                {% endfor %}
+                        {% if item.images %}
+                            <div class="image-slider">
+                                <button class="slider-btn prev-btn">&lt;</button>
+                                <div class="slider-container">
+                                    {% for image in item.images %}
+                                        <img src="/{{ image }}" alt="Image for {{ item.name }}"/>
+                                    {% endfor %}
+                                </div>
+                                <button class="slider-btn next-btn">&gt;</button>
                             </div>
-                            <button class="slider-btn next-btn">&gt;</button>
-                        </div>
+                        {% else %}
+                            <p>No images available for this product.</p>
+                        {% endif %}
                     </td>
                     <td><input type="checkbox" {% if item.purchased %}checked{% endif %} disabled></td>
                     <td><a target="_blank" href=""><button>View Details</button></a></td>

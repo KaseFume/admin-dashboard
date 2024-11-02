@@ -8,7 +8,7 @@ from django.dispatch import receiver
 def get_upload_path(instance, filename):
     """Generate upload path dynamically based on the product type."""
     model_name = instance.content_type.model  # Get the model name (e.g., 'necklace')
-    return f'{model_name}/{instance.object_id}-{filename}'
+    return f'{model_name}/{instance.object_id}/{instance.object_id}-{filename}'
 
 
 class Necklace(models.Model):

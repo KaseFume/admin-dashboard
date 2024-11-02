@@ -12,7 +12,7 @@ urlpatterns = [
   path('pendant/', pendant, name='pendant'),
   path('ring/', ring, name='ring'),
   path('form/', form_view, name='form'),  # Add/Update form
-  path('settings/', settings, name='settings'),  # Utilities page
+  path('settings/', settings_dashboard, name='settings'),  # Utilities page
   path('single-view/', single_view, name='single_view'),
 ]
 

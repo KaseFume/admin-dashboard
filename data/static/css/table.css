@@ -231,7 +231,7 @@
     display: flex; /* Keep as flex to use the full height */
     flex-direction: row; /* Set to row for horizontal growth */
     width: 100%;
-    max-height: 400px; /* This controls the maximum height */
+    max-height: 65vh; /* This controls the maximum height */
     overflow-y: auto; /* Enable scrolling when content overflows */
     margin: 20px 0;
     border-radius: 8px;
@@ -258,7 +258,10 @@
     z-index: 2; /* Ensure it stays above other content */
     background-color: #705DC8; /* Blue header */
 }
-
+.table-container tbody tr{
+    height: 3rem;
+    max-width: 4rem;
+}
 /* Header Cells */
 .table-container thead td {
     padding: 12px 15px;
@@ -319,7 +322,7 @@
 /* Image Preview Placeholder for Table Body Only */
 .table-container tbody td:nth-child(3) {
     width: 30%;
-    height: 10rem;
+    max-height: 350px;
     border-radius: 4px;
     text-align: center;
     vertical-align: middle;
@@ -355,6 +358,7 @@
     position: relative;
     overflow: hidden;
     width: 100%; /* Adjust container size as needed */
+    height: 10rem;
     margin: 0 auto;
 }
 
@@ -362,12 +366,11 @@
     display: flex;
     transition: transform 0.3s ease-in-out;
     width: 100%; /* This width is fixed for smooth transitions */
-    height: 100%;
     margin: 0 auto;
 }
 
 .table-container .slider-container img {
-    width: 100%; /* Ensure each image takes full width of the container */
+    width: 100%;
     object-fit: cover;
     object-position: center;
     flex: 0 0 100%
