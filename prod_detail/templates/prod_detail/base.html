@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product ID - {{ product_code }}</title>
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+  <div class="container">
+    <!-- Product Title -->
+    <h1 class="product-title" id="item_name">{{ name }}</h1>
+    
+    <!-- Image Slider -->
+    <div class="slider">
+      <button class="slider-btn prev" onclick="prevImage()">&#9664;</button>
+      <div class="slider-wrapper">
+        <div class="slider-images" id="image-container">
+          {% for img in images %}
+            <img src="/{{ img }}" alt="Product Image">
+          {% endfor %}
+        </div>
+      </div>
+      <button class="slider-btn next" onclick="nextImage()">&#9654;</button>
+    </div>
+
+    <!-- Product Details -->
+    <div class="product-info">
+      <p><strong>Product Code:</strong> <span id="product_code">{{ product_code }}</span></p>
+      <p><strong>Total Weight:</strong> <span id="total_weight">{{ total_weight }}</span></p>
+      <p><strong>Gold Net Weight:</strong> <span id="gold_net_weight">{{ gold_net_weight }}</span></p>
+      <p><strong>Gem 1:</strong> <span id="gem1">{{ gems_1 }}</span></p>
+      <p><strong>Gem 2:</strong> <span id="gem2">{{ gems_2 }}</span></p>
+      <p><strong>Gem 3:</strong> <span id="gem3">{{ gems_3 }}</span></p>
+    </div>
+
+    <!-- Purchase Section -->
+    <div class="purchase-section">
+      <label>
+        <input type="checkbox" id="purchased" {% if purchased %}checked{% endif %} disabled> Instock  
+      </label>
+    </div>
+  </div>
+
+  <script src="{% static 'script.js' %}"></script>
+</body>
+</html>

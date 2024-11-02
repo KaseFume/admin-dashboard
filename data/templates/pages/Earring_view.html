@@ -15,16 +15,16 @@
             <div class="dropdown">
                 <button class="dropdown-btn">Sort by <span class="arrow">&#9662;</span></button>
                 <ul class="dropdown-menu">
-                    <li><a href="?sort=id&rows={{ request.GET.rows }}&search={{ request.GET.search }}">ID</a></li>
-                    <li><a href="?sort=name&rows={{ request.GET.rows }}&search={{ request.GET.search }}">Name</a></li>
-                </ul>
+                    <a href="?sort=id&rows={{ request.GET.rows|default:10 }}&search={{ request.GET.search }}"><li>ID</li></a>
+                    <a href="?sort=name&rows={{ request.GET.rows|default:10 }}&search={{ request.GET.search }}"><li>Name</li></a>
+                </ul>                
             </div>
             <div class="dropdown">
                 <button class="dropdown-btn">Rows Per Page <span class="arrow">&#9662;</span></button>
                 <ul class="dropdown-menu">
-                    <li><a href="?rows=10&sort={{ request.GET.sort }}&search={{ request.GET.search }}&page={{ items.number }}">10</a></li>
-                    <li><a href="?rows=30&sort={{ request.GET.sort }}&search={{ request.GET.search }}&page={{ items.number }}">30</a></li>
-                    <li><a href="?rows=50&sort={{ request.GET.sort }}&search={{ request.GET.search }}&page={{ items.number }}">50</a></li>
+                    <a href="?rows=10&sort={{ request.GET.sort }}&search={{ request.GET.search }}&page={{ items.number }}"><li>10</li></a>
+                    <a href="?rows=30&sort={{ request.GET.sort }}&search={{ request.GET.search }}&page={{ items.number }}"><li>30</li></a>
+                    <a href="?rows=50&sort={{ request.GET.sort }}&search={{ request.GET.search }}&page={{ items.number }}"><li>50</li></a>
                 </ul>
             </div>            
         </div>
@@ -61,7 +61,7 @@
                         {% endif %}
                     </td>
                     <td><input type="checkbox" {% if item.purchased %}checked{% endif %} disabled></td>
-                    <td><a target="_blank" href=""><button>View Details</button></a></td>
+                    <td><a target="_blank" href="{% url "prod_detail:earring_detail" item.id %}"><button>View Details</button></a></td>
                 </tr>
                 {% empty %}
                 <tr><td colspan="5">No items found.</td></tr>

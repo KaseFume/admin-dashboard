@@ -7,4 +7,5 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('dashboard/', include('data.urls')),
     path('logout/', include('django.contrib.auth.urls')),
+    path('product-detail/',include('prod_detail.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

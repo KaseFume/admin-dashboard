@@ -5,8 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import *
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q,IntegerField, F
 import os
+from django.db.models.functions import Cast
+import re
 # Create your views here
 
 @login_required(login_url='/accounts/send-otp/')
@@ -29,8 +31,22 @@ def earring_view(request):
 
     # Implement sorting
     sort_by = request.GET.get('sort', '')
-    if sort_by in ['id', 'name']:
-        items = items.order_by(sort_by)
+
+    if sort_by == 'id':
+        # Fetch items from the database
+        items = list(items)
+
+    # Define a function to extract the numeric part for sorting
+        def natural_key(item):
+        # Use regex to find numeric part of the ID and convert it to integer
+            match = re.search(r'\d+', item.id)
+            return int(match.group()) if match else 0
+
+    # Sort items using the custom natural key
+        items.sort(key=natural_key)
+
+    elif sort_by == 'name':
+        items = items.order_by('name')
 
     # Add all image paths for each item
     for item in items:
