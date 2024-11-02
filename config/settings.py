@@ -147,4 +147,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
 # settings.py
 LOGIN_REDIRECT_URL = '/data/dashboard/'  # Redirect after login
 LOGIN_URL = '/accounts/send-otp/'  # Default login URL
-LOGOUT_REDIRECT_URL = '/accounts/login/'  # Redirect after logout
+LOGOUT_REDIRECT_URL = '/accounts/send-otp/'  # Redirect after logout

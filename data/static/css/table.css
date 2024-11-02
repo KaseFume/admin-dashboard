@@ -231,7 +231,7 @@
     display: flex; /* Keep as flex to use the full height */
     flex-direction: row; /* Set to row for horizontal growth */
     width: 100%;
-    max-height: 65vh; /* This controls the maximum height */
+    height: 300px;
     overflow-y: auto; /* Enable scrolling when content overflows */
     margin: 20px 0;
     border-radius: 8px;

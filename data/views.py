@@ -9,7 +9,7 @@ from django.db.models import Q
 import os
 # Create your views here
 
-@login_required(login_url='login')
+@login_required(login_url='/accounts/send-otp/')
 def admin_dashboard(request):
     return render(request, 'base.html')
 
@@ -34,18 +34,20 @@ def earring_view(request):
 
     # Add all image paths for each item
     for item in items:
-        product_folder = os.path.join(settings.MEDIA_ROOT,'earring', str(item.id))
+        product_folder = os.path.join(settings.MEDIA_ROOT, 'earring', str(item.id))
         if os.path.exists(product_folder):
             item.images = [f'images/earring/{item.id}/{img}' for img in os.listdir(product_folder) if img.endswith(('.jpg', '.png', '.jpeg', '.gif'))]
         else:
             item.images = []  # Empty list if no images found
 
-    # Pagination (optional)
-    paginator = Paginator(items, 10)  # Show 10 items per page
-    page_number = request.GET.get('page')
+    # Pagination
+    rows_per_page = request.GET.get('rows', 10)  # Default to 10 if not specified
+    paginator = Paginator(items, rows_per_page)  # Show dynamic rows per page
+    page_number = request.GET.get('page', 1)  # Default to 1 if not specified
     items = paginator.get_page(page_number)
 
-    return render(request, 'pages/earring_view.html', {'items': items})
+    return render(request, 'pages/earring_view.html', {'items': items, 'rows_per_page': rows_per_page})
+
 def eprset(request):
     return render(request, 'pages/eprset_view.html')
 
@@ -72,4 +74,4 @@ def single_view(request):
 
 def logout_view(request):
     logout(request)  # Logout the user
-    return redirect('login')  # Redirect to login page
+    return redirect('../../accounts/send-otp/')  # Redirect to login page

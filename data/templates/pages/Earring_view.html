@@ -22,11 +22,11 @@
             <div class="dropdown">
                 <button class="dropdown-btn">Rows Per Page <span class="arrow">&#9662;</span></button>
                 <ul class="dropdown-menu">
-                    <li><a href="?rows=10&sort={{ request.GET.sort }}&search={{ request.GET.search }}">10</a></li>
-                    <li><a href="?rows=30&sort={{ request.GET.sort }}&search={{ request.GET.search }}">30</a></li>
-                    <li><a href="?rows=50&sort={{ request.GET.sort }}&search={{ request.GET.search }}">50</a></li>
+                    <li><a href="?rows=10&sort={{ request.GET.sort }}&search={{ request.GET.search }}&page={{ items.number }}">10</a></li>
+                    <li><a href="?rows=30&sort={{ request.GET.sort }}&search={{ request.GET.search }}&page={{ items.number }}">30</a></li>
+                    <li><a href="?rows=50&sort={{ request.GET.sort }}&search={{ request.GET.search }}&page={{ items.number }}">50</a></li>
                 </ul>
-            </div>
+            </div>            
         </div>
     </div>
     <div class="table-container">

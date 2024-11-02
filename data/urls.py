@@ -14,5 +14,6 @@ urlpatterns = [
   path('form/', form_view, name='form'),  # Add/Update form
   path('settings/', settings_dashboard, name='settings'),  # Utilities page
   path('single-view/', single_view, name='single_view'),
+  path('logout/',logout_view,name='logout')
 ]
 
