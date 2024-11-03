@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -7,17 +7,56 @@ from .models import *
 from django.core.paginator import Paginator
 from django.db.models import Q,IntegerField, F
 import os
+from accounts.models import CustomUser
 from django.db.models.functions import Cast
 import re
 # Create your views here
 
 @login_required(login_url='/accounts/send-otp/')
 def admin_dashboard(request):
-    return render(request, 'base.html')
+    return home(request)
 
+@login_required(login_url='/accounts/send-otp/')
 def home(request):
-    return render(request,'pages/home.html')
+    # Retrieve counts for each jewelry type
+    total_necklaces = Necklace.objects.count()
+    total_epr_sets = EPRSet.objects.count()
+    total_earrings = Earring.objects.count()
+    total_rings = Ring.objects.count()
+    total_handchains = Handchain.objects.count()
+    total_pendants = Pendant.objects.count()
 
+    # Retrieve purchased counts for each jewelry type
+    purchased_necklaces = Necklace.objects.filter(purchased=True).count()
+    purchased_epr_sets = EPRSet.objects.filter(purchased=True).count()
+    purchased_earrings = Earring.objects.filter(purchased=True).count()
+    purchased_rings = Ring.objects.filter(purchased=True).count()
+    purchased_handchains = Handchain.objects.filter(purchased=True).count()
+    purchased_pendants = Pendant.objects.filter(purchased=True).count()
+
+    # Total users (including all types of users)
+    total_users = CustomUser.objects.count()  # Count users from your CustomUser model
+
+    # Prepare context data
+    context = {
+        'total_necklaces': total_necklaces,
+        'total_epr_sets': total_epr_sets,
+        'total_earrings': total_earrings,
+        'total_rings': total_rings,
+        'total_handchains': total_handchains,
+        'total_pendants': total_pendants,
+        'purchased_necklaces': purchased_necklaces,
+        'purchased_epr_sets': purchased_epr_sets,
+        'purchased_earrings': purchased_earrings,
+        'purchased_rings': purchased_rings,
+        'purchased_handchains': purchased_handchains,
+        'purchased_pendants': purchased_pendants,
+        'total_users': total_users,
+    }
+
+    return render(request, 'pages/home.html', context)
+
+@login_required(login_url='/accounts/send-otp/')
 def earring_view(request):
     # Fetch all Earring objects
     items = Earring.objects.all()
@@ -64,6 +103,7 @@ def earring_view(request):
 
     return render(request, 'pages/earring_view.html', {'items': items, 'rows_per_page': rows_per_page})
 
+@login_required(login_url='/accounts/send-otp/')
 def eprset_view(request):
     # Fetch all EPRSet objects
     items = EPRSet.objects.all()
@@ -105,6 +145,7 @@ def eprset_view(request):
 
     return render(request, 'pages/eprset_view.html', {'items': items, 'rows_per_page': rows_per_page})
 
+@login_required(login_url='/accounts/send-otp/')
 def handchain(request):
     # Fetch all EPRSet objects
     items = Handchain.objects.all()
@@ -145,6 +186,7 @@ def handchain(request):
     items = paginator.get_page(page_number)
     return render(request, 'pages/handchain_view.html',{'items': items, 'rows_per_page': rows_per_page})
 
+@login_required(login_url='/accounts/send-otp/')
 def necklace(request):
     # Fetch all EPRSet objects
     items = Necklace.objects.all()
@@ -185,6 +227,7 @@ def necklace(request):
     items = paginator.get_page(page_number)
     return render(request, 'pages/necklace_view.html',{'items': items, 'rows_per_page': rows_per_page})
 
+@login_required(login_url='/accounts/send-otp/')
 def pendant(request):
     # Fetch all EPRSet objects
     items = Pendant.objects.all()
@@ -225,6 +268,7 @@ def pendant(request):
     items = paginator.get_page(page_number)
     return render(request, 'pages/pendant_view.html',{'items': items, 'rows_per_page': rows_per_page})
 
+@login_required(login_url='/accounts/send-otp/')
 def ring(request):
     # Fetch all EPRSet objects
     items = Ring.objects.all()
@@ -265,15 +309,19 @@ def ring(request):
     items = paginator.get_page(page_number)
     return render(request, 'pages/ring_view.html',{'items': items, 'rows_per_page': rows_per_page})
 
+@login_required(login_url='/accounts/send-otp/')
 def form_view(request):
     return render(request, 'pages/form.html')
 
+@login_required(login_url='/accounts/send-otp/')
 def settings_dashboard(request):
     return render(request, 'pages/setting.html')
 
+@login_required(login_url='/accounts/send-otp/')
 def single_view(request):
     return render(request, 'pages/single-view.html')
 
+@login_required(login_url='/accounts/send-otp/')
 def logout_view(request):
     logout(request)  # Logout the user
     return redirect('../../accounts/send-otp/')  # Redirect to login page

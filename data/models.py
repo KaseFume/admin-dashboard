@@ -150,3 +150,23 @@ def delete_old_image_on_change(sender, instance, **kwargs):
     # If the new image is different from the old one, delete the old one
     if old_image and old_image != instance.image:
         old_image.storage.delete(old_image.name)
+        
+class Currency(models.Model):
+    # ContentType and Object ID fields for GenericForeignKey setup
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.CharField(max_length=255)  # Use CharField to support IDs like 'N-3232'
+    product = GenericForeignKey('content_type', 'object_id')
+    
+    # Currency type choices
+    USD = 'USD'
+    THB = 'THB'
+    MMK = 'MMK'
+    CURRENCY_CHOICES = [
+        (USD, 'USD'),
+        (THB, 'THB'),
+        (MMK, 'MMK'),
+    ]
+    currencyType = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
+
+    def __str__(self):
+        return f"{self.product} - {self.currencyType}"

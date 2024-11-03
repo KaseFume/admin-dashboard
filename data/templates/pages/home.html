@@ -2,98 +2,59 @@
 
 {% block content %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin-Dashboard |Home</title>
-    <link rel="stylesheet" href="css/home.css">
-</head>
-<body>
-    <div class="home-container">
-        <h4 class="welcome-message">Hi User!</h4>
-        <p class="dashboard-title">Statistics</p>
-        <div class="grid-container">
-            <div class="grid-item table-container-2">
-                <table id="data-table">
-                    <tr>
-                        <th>Type</th>
-                        <th>Qty</th>
-                    </tr>
-                    <tr>
-                        <td>Ring:</td>
-                        <td class="amount">121</td>
-                    </tr>
-                    <tr>
-                        <td>Pendant:</td>
-                        <td class="amount">121</td>
-                    </tr>
-                    <tr>
-                        <td>Handchain:</td>
-                        <td class="amount">121</td>
-                    </tr>
-                    <tr>
-                        <td>EPR set:</td>
-                        <td class="amount">121</td>
-                    </tr>
-                    <tr>
-                        <td>Earring:</td>
-                        <td class="amount">121</td>
-                    </tr>
-                    <tr>
-                        <td>Necklace:</td>
-                        <td class="amount">121</td>
-                    </tr>
-                    <tr>
-                        <td>Total</td>
-                        <td id="total"></td>
-                    </tr>
-                </table>
-            </div>
-            <div class="grid-item">
-                <div class="grid-item overview">
-                    <h3>Dashboard Overview</h3> <!-- Title for the combined grid item -->
-                
-                    <div class="metric">
-                      <span>Total Users:</span>
-                      <span class="user-count">150</span>
-                    </div>
-                    
-                    <div class="metric">
-                        <span>Ring (Purchased)</span>
-                        <span class="session-count">20</span>
-                    </div>
-                    <div class="metric">
-                        <span>Pendant (Purchased)</span>
-                        <span class="session-count">20</span>
-                    </div>
-                    <div class="metric">
-                        <span>EPR set (Purchased)</span>
-                        <span class="session-count">20</span>
-                    </div>
-                    <div class="metric">
-                        <span>Necklace (Purchased)</span>
-                        <span class="session-count">20</span>
-                    </div>
-                    <div class="metric">
-                        <span>Handchain (Purchased)</span>
-                        <span class="session-count">20</span>
-                    </div>
-                    <div class="metric">
-                        <span>Earring (Purchased)</span>
-                        <span class="session-count">20</span>
-                    </div>
-                    <div class="metric">
-                        <span>Total Purchased</span>
-                        <span class="session-count"></span>
-                    </div>
-                </div>
-            </div>
-          </div>      
-    </div>
-    <script src="js/calculate-purchased.js"></script>
-</body>
-</html>
+<div class="home-container">
+    <h4 class="welcome-message">Welcome to Dashboard</h4>
+    <p class="dashboard-title">Statistics</p>
+    <div class="grid-container">
+        <div class="grid-item table-container-2">
+            <table id="data-table">
+                <tr>
+                    <th>Type</th>
+                    <th>Total Items</th>
+                    <th>Total Purchased</th>
+                </tr>
+                <tr>
+                    <td>Necklace:</td>
+                    <td class="amount">{{ total_necklaces }}</td>
+                    <td class="amount">{{ purchased_necklaces }}</td>
+                </tr>
+                <tr>
+                    <td>EPR Set:</td>
+                    <td class="amount">{{ total_epr_sets }}</td>
+                    <td class="amount">{{ purchased_epr_sets }}</td>
+                </tr>
+                <tr>
+                    <td>Earring:</td>
+                    <td class="amount">{{ total_earrings }}</td>
+                    <td class="amount">{{ purchased_earrings }}</td>
+                </tr>
+                <tr>
+                    <td>Ring:</td>
+                    <td class="amount">{{ total_rings }}</td>
+                    <td class="amount">{{ purchased_rings }}</td>
+                </tr>
+                <tr>
+                    <td>Handchain:</td>
+                    <td class="amount">{{ total_handchains }}</td>
+                    <td class="amount">{{ purchased_handchains }}</td>
+                </tr>
+                <tr>
+                    <td>Pendant:</td>
+                    <td class="amount">{{ total_pendants }}</td>
+                    <td class="amount">{{ purchased_pendants }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Total:</strong></td>
+                    <td class="amount"><strong>{{ total_necklaces|add:total_epr_sets|add:total_earrings|add:total_rings|add:total_handchains|add:total_pendants }}</strong></td>
+                    <td class="amount"><strong>{{ purchased_necklaces|add:purchased_epr_sets|add:purchased_earrings|add:purchased_rings|add:purchased_handchains|add:purchased_pendants }}</strong></td>
+                </tr>
+                <tr>
+                    <td>Total Users:</td>
+                    <td colspan="2" class="amount">{{ total_users }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>      
+</div>
 
 {% endblock %}
