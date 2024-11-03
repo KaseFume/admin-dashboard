@@ -325,3 +325,11 @@ def single_view(request):
 def logout_view(request):
     logout(request)  # Logout the user
     return redirect('../../accounts/send-otp/')  # Redirect to login page
+
+@login_required(login_url='/accounts/send-otp')
+def add_form(request):
+    return render(request,'pages/add-form.html')
+
+@login_required(login_url='/accounts/send-otp')
+def update_form(request):
+    return render(request,'pages/update-form.html')

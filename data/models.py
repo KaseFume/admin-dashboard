@@ -25,7 +25,7 @@ class Necklace(models.Model):
     purchased = models.BooleanField()
 
 class EPRSet(models.Model):
-    id = models.CharField(max_length=255, default="ERP-", primary_key=True)
+    id = models.CharField(max_length=255, default="EPR-", primary_key=True)
     name = models.CharField(max_length=255)
     total_weight = models.TextField()
     gold_net_weight = models.TextField()

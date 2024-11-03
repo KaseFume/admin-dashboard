@@ -71,15 +71,30 @@
     </div>
     <div class="pagination">
         {% if items.has_previous %}
-        <a href="?page={{ items.previous_page_number }}&sort={{ request.GET.sort }}&rows={{ request.GET.rows }}&search={{ request.GET.search }}" class="prev">&laquo; Prev</a>
+            <a href="?page={{ items.previous_page_number }}
+                {% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}
+                {% if request.GET.rows %}&rows={{ request.GET.rows }}{% endif %}
+                {% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+               class="prev">&laquo; Prev</a>
         {% endif %}
+        
         {% for page_num in items.paginator.page_range %}
-            <a href="?page={{ page_num }}&sort={{ request.GET.sort }}&rows={{ request.GET.rows }}&search={{ request.GET.search }}" class="page {% if items.number == page_num %}active{% endif %}">{{ page_num }}</a>
+            <a href="?page={{ page_num }}
+                {% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}
+                {% if request.GET.rows %}&rows={{ request.GET.rows }}{% endif %}
+                {% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+               class="page {% if items.number == page_num %}active{% endif %}">{{ page_num }}</a>
         {% endfor %}
+        
         {% if items.has_next %}
-        <a href="?page={{ items.next_page_number }}&sort={{ request.GET.sort }}&rows={{ request.GET.rows }}&search={{ request.GET.search }}" class="next">Next &raquo;</a>
+            <a href="?page={{ items.next_page_number }}
+                {% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}
+                {% if request.GET.rows %}&rows={{ request.GET.rows }}{% endif %}
+                {% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+               class="next">Next &raquo;</a>
         {% endif %}
     </div>
+    
 </div>
 
 {% endblock %}
