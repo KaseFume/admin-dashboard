@@ -1,112 +1,95 @@
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data-View | RING</title>
-    <link rel="stylesheet" href="css/table.css">
-    <link rel="stylesheet" href="css/image slider/image slider.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-</head>
-    <div class="list-container">
-        <div class="first-container">
-            <span class="product-category"><i class="fas fa-ring"></i> RING</span>
-            <div class="table-tools">
-                <div class="search-tools">
-                    <form>
-                        <input type="text" placeholder="Search By ID" name="search">
-                        <button type="submit"><i class="fa fa-search"></i></button>
-                    </form>
-                </div>
-                <div class="dropdown">
-                    <button class="dropdown-btn">Sort by <span class="arrow">&#9662;</span></button>
-                    <ul class="dropdown-menu">
-                      <li>ID</li>
-                      <li>Name</li>
-                    </ul>
-                </div>
-                <div class="dropdown">
-                    <button class="dropdown-btn">Rows Per Column <span class="arrow">&#9662;</span></button>
-                    <ul class="dropdown-menu">
-                      <li>10</li>
-                      <li>30</li>
-                      <li>50</li>
-                    </ul>
-                </div>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="list-container">
+    <div class="first-container">
+        <span class="product-category"><i class="fas fa-ring"></i> RING</span>
+        <div class="table-tools">
+            <div class="search-tools">
+                <form method="GET" action="">
+                    <input type="text" placeholder="Search By ID" name="search" value="{{ request.GET.search }}">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+            </div>
+            <div class="dropdown">
+                <button class="dropdown-btn">Sort by <span class="arrow">&#9662;</span></button>
+                <ul class="dropdown-menu">
+                    <a href="?sort=id&rows={{ request.GET.rows|default:10 }}&search={{ request.GET.search }}"><li>ID</li></a>
+                    <a href="?sort=name&rows={{ request.GET.rows|default:10 }}&search={{ request.GET.search }}"><li>Name</li></a>
+                </ul>
+            </div>
+            <div class="dropdown">
+                <button class="dropdown-btn">Rows Per Page <span class="arrow">&#9662;</span></button>
+                <ul class="dropdown-menu">
+                    <a href="?rows=10&sort={{ request.GET.sort }}&search={{ request.GET.search }}&page={{ items.number }}"><li>10</li></a>
+                    <a href="?rows=30&sort={{ request.GET.sort }}&search={{ request.GET.search }}&page={{ items.number }}"><li>30</li></a>
+                    <a href="?rows=50&sort={{ request.GET.sort }}&search={{ request.GET.search }}&page={{ items.number }}"><li>50</li></a>
+                </ul>
             </div>
         </div>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <td>ID</td>
-                        <td>Name</td>
-                        <td>Image Preview</td>
-                        <td>Purchased</td>
-                        <td>Details</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>R-1232</td>
-                        <td class="truncate">Black Tea is very nice</td>
-                        <td>
-                            <div class="image-slider">
-                            <button class="slider-btn prev-btn">&lt;</button>
-                            <div class="slider-container">
-                              <img src="img/background.avif" alt="Image 1" />
-                              <img src="img/images.png" alt="Image 2" />
-                              <img src="img/background.avif" alt="Image 3" />
-                            </div>
-                            <button class="slider-btn next-btn">&gt;</button>
-                          </div>
-                        </td>
-                        <td><input type="checkbox" checked disabled></td>
-                        <td><button>View Details</button></td>
-                    </tr>
-                    <tr>
-                        <td>R-1232</td>
-                        <td class="truncate">Black Tea is very nice</td>
-                        <td>
-                            <div class="image-slider">
-                            <button class="slider-btn prev-btn">&lt;</button>
-                            <div class="slider-container">
-                              <img src="img/images.png" alt="Image 1" />
-                              <img src="img/images.png" alt="Image 2" />
-                              <img src="img/background.avif" alt="Image 3" />
-                            </div>
-                            <button class="slider-btn next-btn">&gt;</button>
-                          </div>
-                        </td>
-                        <td><input type="checkbox" checked disabled></td>
-                        <td><button>View Details</button></td>
-                    </tr>
-                    <tr>
-                        <td>R-1232</td>
-                        <td class="truncate">Black Tea is very nice</td>
-                        <td>
-                            <div class="image-slider">
-                            <button class="slider-btn prev-btn">&lt;</button>
-                            <div class="slider-container">
-                              <img src="img/images.png" alt="Image 1" />
-                              <img src="img/images.png" alt="Image 2" />
-                              <img src="img/background.avif" alt="Image 3" />
-                            </div>
-                            <button class="slider-btn next-btn">&gt;</button>
-                          </div>
-                        </td>
-                        <td><input type="checkbox" checked disabled></td>
-                        <td><button>View Details</button></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="pagination">
-            <a href="#" class="prev">&laquo; Prev</a>
-            <a href="#" class="page active">1</a>
-            <a href="#" class="page">2</a>
-            <a href="#" class="page">3</a>
-            <a href="#" class="next">Next &raquo;</a>
-        </div>
-        
     </div>
-    <script src="js/script-list.js"></script>
-    <script src="js/image-slider.js"></script>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Image Preview</th>
+                    <th>Purchased</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td class="truncate">{{ item.name }}</td>
+                    <td>
+                        {% if item.images %}
+                            <div class="image-slider">
+                                <button class="slider-btn prev-btn">&lt;</button>
+                                <div class="slider-container">
+                                    {% for image in item.images %}
+                                        <img src="/{{ image }}" alt="Image for {{ item.name }}"/>
+                                    {% endfor %}
+                                </div>
+                                <button class="slider-btn next-btn">&gt;</button>
+                            </div>
+                        {% else %}
+                            <p>No images available for this product.</p>
+                        {% endif %}
+                    </td>
+                    <td><input type="checkbox" {% if item.purchased %}checked{% endif %} disabled></td>
+                    <td><a target="_blank" href="{% url 'prod_detail:ring_detail' item.id %}"><button>View Details</button></a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No items found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination">
+        {% if items.has_previous %}
+        <a href="?page={{ items.previous_page_number }}&sort={{ request.GET.sort }}&rows={{ request.GET.rows }}&search={{ request.GET.search }}" class="prev">&laquo; Prev</a>
+        {% endif %}
+        {% for page_num in items.paginator.page_range %}
+            <a href="?page={{ page_num }}&sort={{ request.GET.sort }}&rows={{ request.GET.rows }}&search={{ request.GET.search }}" class="page {% if items.number == page_num %}active{% endif %}">{{ page_num }}</a>
+        {% endfor %}
+        {% if items.has_next %}
+        <a href="?page={{ items.next_page_number }}&sort={{ request.GET.sort }}&rows={{ request.GET.rows }}&search={{ request.GET.search }}" class="next">Next &raquo;</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/table.css' %}">
+<link rel="stylesheet" href="{% static 'css/image-slider/image-slider.css' %}">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/image-slider.js' %}"></script>
+<script src="{% static 'js/script-list.js' %}"></script>
+{% endblock %}

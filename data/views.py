@@ -64,20 +64,206 @@ def earring_view(request):
 
     return render(request, 'pages/earring_view.html', {'items': items, 'rows_per_page': rows_per_page})
 
-def eprset(request):
-    return render(request, 'pages/eprset_view.html')
+def eprset_view(request):
+    # Fetch all EPRSet objects
+    items = EPRSet.objects.all()
+
+    # Implement search functionality for both ID and name
+    search_query = request.GET.get('search', '')
+    if search_query:
+        items = items.filter(
+            Q(id__icontains=search_query) | Q(name__icontains=search_query)
+        )
+
+    # Implement sorting
+    sort_by = request.GET.get('sort', '')
+    if sort_by == 'id':
+        # Define a function to extract the numeric part for sorting
+        def natural_key(item):
+            match = re.search(r'\d+', item.id)
+            return int(match.group()) if match else 0
+
+        items = list(items)
+        items.sort(key=natural_key)
+
+    elif sort_by == 'name':
+        items = items.order_by('name')
+
+    # Add all image paths for each item
+    for item in items:
+        product_folder = os.path.join(settings.MEDIA_ROOT, 'eprset', str(item.id))
+        if os.path.exists(product_folder):
+            item.images = [f'images/eprset/{item.id}/{img}' for img in os.listdir(product_folder) if img.endswith(('.jpg', '.png', '.jpeg', '.gif'))]
+        else:
+            item.images = []  # Empty list if no images found
+
+    # Pagination
+    rows_per_page = request.GET.get('rows', 10)
+    paginator = Paginator(items, rows_per_page)
+    page_number = request.GET.get('page', 1)
+    items = paginator.get_page(page_number)
+
+    return render(request, 'pages/eprset_view.html', {'items': items, 'rows_per_page': rows_per_page})
 
 def handchain(request):
-    return render(request, 'pages/handchain_view.html')
+    # Fetch all EPRSet objects
+    items = Handchain.objects.all()
+
+    # Implement search functionality for both ID and name
+    search_query = request.GET.get('search', '')
+    if search_query:
+        items = items.filter(
+            Q(id__icontains=search_query) | Q(name__icontains=search_query)
+        )
+
+    # Implement sorting
+    sort_by = request.GET.get('sort', '')
+    if sort_by == 'id':
+        # Define a function to extract the numeric part for sorting
+        def natural_key(item):
+            match = re.search(r'\d+', item.id)
+            return int(match.group()) if match else 0
+
+        items = list(items)
+        items.sort(key=natural_key)
+
+    elif sort_by == 'name':
+        items = items.order_by('name')
+
+    # Add all image paths for each item
+    for item in items:
+        product_folder = os.path.join(settings.MEDIA_ROOT, 'handchain', str(item.id))
+        if os.path.exists(product_folder):
+            item.images = [f'images/handchain/{item.id}/{img}' for img in os.listdir(product_folder) if img.endswith(('.jpg', '.png', '.jpeg', '.gif'))]
+        else:
+            item.images = []  # Empty list if no images found
+
+    # Pagination
+    rows_per_page = request.GET.get('rows', 10)
+    paginator = Paginator(items, rows_per_page)
+    page_number = request.GET.get('page', 1)
+    items = paginator.get_page(page_number)
+    return render(request, 'pages/handchain_view.html',{'items': items, 'rows_per_page': rows_per_page})
 
 def necklace(request):
-    return render(request, 'pages/necklace_view.html')
+    # Fetch all EPRSet objects
+    items = Necklace.objects.all()
+
+    # Implement search functionality for both ID and name
+    search_query = request.GET.get('search', '')
+    if search_query:
+        items = items.filter(
+            Q(id__icontains=search_query) | Q(name__icontains=search_query)
+        )
+
+    # Implement sorting
+    sort_by = request.GET.get('sort', '')
+    if sort_by == 'id':
+        # Define a function to extract the numeric part for sorting
+        def natural_key(item):
+            match = re.search(r'\d+', item.id)
+            return int(match.group()) if match else 0
+
+        items = list(items)
+        items.sort(key=natural_key)
+
+    elif sort_by == 'name':
+        items = items.order_by('name')
+
+    # Add all image paths for each item
+    for item in items:
+        product_folder = os.path.join(settings.MEDIA_ROOT, 'necklace', str(item.id))
+        if os.path.exists(product_folder):
+            item.images = [f'images/necklace/{item.id}/{img}' for img in os.listdir(product_folder) if img.endswith(('.jpg', '.png', '.jpeg', '.gif'))]
+        else:
+            item.images = []  # Empty list if no images found
+
+    # Pagination
+    rows_per_page = request.GET.get('rows', 10)
+    paginator = Paginator(items, rows_per_page)
+    page_number = request.GET.get('page', 1)
+    items = paginator.get_page(page_number)
+    return render(request, 'pages/necklace_view.html',{'items': items, 'rows_per_page': rows_per_page})
 
 def pendant(request):
-    return render(request, 'pages/pendant_view.html')
+    # Fetch all EPRSet objects
+    items = Pendant.objects.all()
+
+    # Implement search functionality for both ID and name
+    search_query = request.GET.get('search', '')
+    if search_query:
+        items = items.filter(
+            Q(id__icontains=search_query) | Q(name__icontains=search_query)
+        )
+
+    # Implement sorting
+    sort_by = request.GET.get('sort', '')
+    if sort_by == 'id':
+        # Define a function to extract the numeric part for sorting
+        def natural_key(item):
+            match = re.search(r'\d+', item.id)
+            return int(match.group()) if match else 0
+
+        items = list(items)
+        items.sort(key=natural_key)
+
+    elif sort_by == 'name':
+        items = items.order_by('name')
+
+    # Add all image paths for each item
+    for item in items:
+        product_folder = os.path.join(settings.MEDIA_ROOT, 'pendant', str(item.id))
+        if os.path.exists(product_folder):
+            item.images = [f'images/pendant/{item.id}/{img}' for img in os.listdir(product_folder) if img.endswith(('.jpg', '.png', '.jpeg', '.gif'))]
+        else:
+            item.images = []  # Empty list if no images found
+
+    # Pagination
+    rows_per_page = request.GET.get('rows', 10)
+    paginator = Paginator(items, rows_per_page)
+    page_number = request.GET.get('page', 1)
+    items = paginator.get_page(page_number)
+    return render(request, 'pages/pendant_view.html',{'items': items, 'rows_per_page': rows_per_page})
 
 def ring(request):
-    return render(request, 'pages/ring_view.html')
+    # Fetch all EPRSet objects
+    items = Ring.objects.all()
+
+    # Implement search functionality for both ID and name
+    search_query = request.GET.get('search', '')
+    if search_query:
+        items = items.filter(
+            Q(id__icontains=search_query) | Q(name__icontains=search_query)
+        )
+
+    # Implement sorting
+    sort_by = request.GET.get('sort', '')
+    if sort_by == 'id':
+        # Define a function to extract the numeric part for sorting
+        def natural_key(item):
+            match = re.search(r'\d+', item.id)
+            return int(match.group()) if match else 0
+
+        items = list(items)
+        items.sort(key=natural_key)
+
+    elif sort_by == 'name':
+        items = items.order_by('name')
+
+    # Add all image paths for each item
+    for item in items:
+        product_folder = os.path.join(settings.MEDIA_ROOT, 'ring', str(item.id))
+        if os.path.exists(product_folder):
+            item.images = [f'images/ring/{item.id}/{img}' for img in os.listdir(product_folder) if img.endswith(('.jpg', '.png', '.jpeg', '.gif'))]
+        else:
+            item.images = []  # Empty list if no images found
+
+    # Pagination
+    rows_per_page = request.GET.get('rows', 10)
+    paginator = Paginator(items, rows_per_page)
+    page_number = request.GET.get('page', 1)
+    items = paginator.get_page(page_number)
+    return render(request, 'pages/ring_view.html',{'items': items, 'rows_per_page': rows_per_page})
 
 def form_view(request):
     return render(request, 'pages/form.html')
