@@ -1,3 +1,4 @@
+// Function definition
 function initializeImageUploadPage() {
     const maxImages = 10;
     const imageUploadContainer = document.getElementById('imageUploadContainer');
@@ -69,4 +70,5 @@ function initializeImageUploadPage() {
     setLastUpdatedTime();
 }
 
-window.initializeImageUploadPage = initializeImageUploadPage;
+// Immediate function call
+initializeImageUploadPage();

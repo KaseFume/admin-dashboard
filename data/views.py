@@ -10,6 +10,7 @@ import os
 from accounts.models import CustomUser
 from django.db.models.functions import Cast
 import re
+from django.http import JsonResponse
 # Create your views here
 
 @login_required(login_url='/accounts/send-otp/')
@@ -311,6 +312,7 @@ def ring(request):
 
 @login_required(login_url='/accounts/send-otp/')
 def form_view(request):
+
     return render(request, 'pages/form.html')
 
 @login_required(login_url='/accounts/send-otp/')
@@ -327,9 +329,65 @@ def logout_view(request):
     return redirect('../../accounts/send-otp/')  # Redirect to login page
 
 @login_required(login_url='/accounts/send-otp')
-def add_form(request):
-    return render(request,'pages/add-form.html')
+def check_product(request, product_id):
+    prefix = product_id.split('-')[0]
+
+    model_map = {
+        'E': Earring,
+        'N': Necklace,
+        'R': Ring,
+        'H': Handchain,
+        'P': Pendant,
+        'EPR': EPRSet
+    }
+
+    model = model_map.get(prefix)
+    exists = model.objects.filter(id=product_id).exists() if model else False
+
+    if exists:
+        return redirect('data:update_form', product_id=product_id)
+    else:
+        return redirect('data:add_form', product_id=product_id)
 
 @login_required(login_url='/accounts/send-otp')
-def update_form(request):
-    return render(request,'pages/update-form.html')
+def add_form(request, product_id):
+    
+    return render(request, 'pages/add-form.html')
+
+@login_required(login_url='/accounts/send-otp')
+def update_form(request, product_id):
+    # Define a mapping of prefixes to models
+    model_mapping = {
+        'EPR-': EPRSet,
+        'E-': Earring,
+        'N-': Necklace,
+        'R-': Ring,
+        'H-': Handchain,
+        'P-': Pendant,
+    }
+
+    # Determine the prefix and fetch the corresponding product
+    prefix = None
+    product = None
+    
+    for pfx, model in model_mapping.items():
+        if product_id.startswith(pfx):
+            prefix = pfx
+            product = get_object_or_404(model, id=product_id)
+            break  # Exit the loop once the correct prefix is found
+
+    # If the product was not found, you might want to handle it appropriately
+    # if product is None:
+    #     return render(request, 'pages/error.html', {'message': 'Product not found.'})  # Example error handling
+
+    # Retrieve the currency for the product
+    currency = Currency.objects.filter(content_type=ContentType.objects.get_for_model(product), object_id=product_id).first()
+
+    # Pass the product, currency, and prefix to the template
+    context = {
+        'product': product,
+        'currency': currency,
+        'selected_prefix': prefix,  # Pass the selected prefix to the template
+    }
+
+    return render(request, 'pages/update-form.html', context)

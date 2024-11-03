@@ -1,78 +1,81 @@
-<link rel="stylesheet" href="css/form.css">
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block content %}
+<link rel="stylesheet" href="{% static "css/form.css" %}">
 <div class="form-container">
     <div class="form-header">
-    <p>Update Form</p>
-    <button>Delete Product</button>
+        <p>Update Form</p>
+        <button>Delete Product</button>
     </div>
     <div class="input-group">
         <label for="productID" class="label">Product ID:&nbsp;</label>
         <select id="options" disabled>
-            <option value="R-">R-</option>
-            <option value="H-">H-</option>
-            <option value="EPR-" selected>EPR-</option>
-            <option value="P-">P-</option>
-            <option value="E-">E-</option>
-            <option value="N-">N-</option>
+            <option value="R-" {% if selected_prefix == 'R-' %}selected{% endif %}>R-</option>
+            <option value="H-" {% if selected_prefix == 'H-' %}selected{% endif %}>H-</option>
+            <option value="EPR-" {% if selected_prefix == 'EPR-' %}selected{% endif %}>EPR-</option>
+            <option value="P-" {% if selected_prefix == 'P-' %}selected{% endif %}>P-</option>
+            <option value="E-" {% if selected_prefix == 'E-' %}selected{% endif %}>E-</option>
+            <option value="N-" {% if selected_prefix == 'N-' %}selected{% endif %}>N-</option>
         </select>
-        <input type="number" id="numberInput" value="1232" min="0" disabled>
+        <input type="number" id="numberInput" value="{{ product.id|extract_number}}" min="0" disabled>
     </div>
     <div class="form-container-2">
         <form id="updateProductForm" enctype="multipart/form-data">
             <div class="grid-container">
                 <div class="grid-item">
                     <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" maxlength="255" value="Existing Product Name" required>
+                    <input type="text" id="name" name="name" maxlength="255" value="{{ product.name }}" required>
                 </div>
                 <div class="grid-item">
                     <label for="total_weight">Total Weight:</label>
-                    <input type="text" id="total_weight" name="total_weight" value="Existing Total Weight">
+                    <input type="text" id="total_weight" name="total_weight" value="{{ product.total_weight }}">
                 </div>
                 <div class="grid-item">
                     <label for="gold_net_weight">Gold Net Weight:</label>
-                    <input type="text" id="gold_net_weight" name="gold_net_weight" value="Existing Gold Net Weight">
+                    <input type="text" id="gold_net_weight" name="gold_net_weight" value="{{ product.gold_net_weight }}">
                 </div>
                 <div class="grid-item">
                     <label for="gems_1">Gems 1:</label>
-                    <input type="text" id="gems_1" name="gems_1" value="Existing Gem 1">
+                    <input type="text" id="gems_1" name="gems_1" value="{{ product.gems_1 }}">
                 </div>
                 <div class="grid-item">
                     <label for="gems_2">Gems 2:</label>
-                    <input type="text" id="gems_2" name="gems_2" value="Existing Gem 2">
+                    <input type="text" id="gems_2" name="gems_2" value="{{ product.gems_2 }}">
                 </div>
                 <div class="grid-item">
                     <label for="gems_3">Gems 3:</label>
-                    <input type="text" id="gems_3" name="gems_3" value="Existing Gem 3">
+                    <input type="text" id="gems_3" name="gems_3" value="{{ product.gems_3 }}">
                 </div>
                 <div class="grid-item">
                     <label for="a_ywrt">A Ywrt:</label>
-                    <input type="text" id="a_ywrt" name="a_ywrt" value="Existing A Ywrt">
+                    <input type="text" id="a_ywrt" name="a_ywrt" value="{{ product.a_ywrt }}">
                 </div>
                 <div class="grid-item">
                     <label for="latkha">Latkha:</label>
-                    <input type="text" id="latkha" name="latkha" value="Existing Latkha">
+                    <input type="text" id="latkha" name="latkha" value="{{ product.latkha }}">
                 </div>
                 <div class="grid-item price-item">
                     <label for="price">Price:</label>
-                    <input type="number" id="price" name="price" value="Existing Price">
+                    <input type="number" id="price" name="price" value="{{ product.price }}">
                     <select id="currency" name="currency">
-                        <option value="MMK" selected>MMK</option>
-                        <option value="USD">USD</option>
-                        <option value="THB">THB</option>
+                        <option value="MMK" {% if currency.currencyType == 'MMK' %}selected{% endif %}>MMK</option>
+                        <option value="USD" {% if currency.currencyType == 'USD' %}selected{% endif %}>USD</option>
+                        <option value="THB" {% if currency.currencyType == 'THB' %}selected{% endif %}>THB</option>
                     </select>
                 </div>                        
                 <div class="grid-item purchased-checkbox">
                     <label for="purchased">Purchased:</label>
-                    <input type="checkbox" id="purchased" name="purchased" checked>
+                    <input type="checkbox" id="purchased" name="purchased" {% if product.purchased %}checked{% endif %}>
                 </div>
                 <div class="grid-item">
                     <label for="lastUpdated">Last Updated:</label>
-                    <input type="text" disabled>
+                    <input type="text" value="{{ product.last_updated }}" disabled>
                 </div>
                 <div class="grid-item">
                     <label for="lastUpdated">Time to be updated:</label>
                     <input type="text" id="lastUpdated" name="lastUpdated" disabled>
                 </div>
-                
             </div>
             <br>
             <div id="imageUploadContainer">
@@ -80,10 +83,9 @@
                 <input type="file" name="images" class="image-input" accept="image/*"><br><br>
             </div>
             <button type="button" id="addImageButton">Add Another Image</button>
-            
             <br><br>
-    
             <input type="submit" value="Update">
         </form>
     </div>
-    <script src="js/create-form.js"></script>
+    <script src="{% static "js/create-form.js" %}"></script>
+{% endblock %}

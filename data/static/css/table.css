@@ -356,24 +356,28 @@
 }
 .table-container .image-slider {
     position: relative;
+    width: 100%; /* Adjust as needed */
+    height: 0;
+    padding-top: 100%; /* This maintains a 1:1 aspect ratio */
     overflow: hidden;
-    width: 100%; /* Adjust container size as needed */
-    height: 10rem;
-    margin: 0 auto;
+    border-radius: 12px; /* Add border radius if needed */
 }
 
 .table-container .slider-container {
-    display: flex;
-    transition: transform 0.3s ease-in-out;
-    width: 100%; /* This width is fixed for smooth transitions */
-    margin: 0 auto;
+    display: flex; /* Align items in a row */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s ease-in-out; /* Smooth transition */
 }
 
-.table-container .slider-container img {
-    width: 100%;
-    object-fit: cover;
-    object-position: center;
-    flex: 0 0 100%
+.table-container .image-slider img {
+    width: 100%; /* Make images responsive */
+    height: 100%; /* Cover the container */
+    object-fit: cover; /* Maintain aspect ratio */
+    flex: 0 0 100%; /* Each image takes up 100% of the slider */
 }
 
 /* Button styling */

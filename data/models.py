@@ -23,6 +23,7 @@ class Necklace(models.Model):
     latkha = models.TextField(blank=True, null=True)
     price = models.BigIntegerField(blank=True, null=True)
     purchased = models.BooleanField()
+    last_updated = models.DateTimeField(auto_now=True)
 
 class EPRSet(models.Model):
     id = models.CharField(max_length=255, default="EPR-", primary_key=True)
@@ -36,6 +37,7 @@ class EPRSet(models.Model):
     latkha = models.TextField(blank=True, null=True)
     price = models.BigIntegerField(blank=True, null=True)
     purchased = models.BooleanField()
+    last_updated = models.DateTimeField(auto_now=True)
 
 class Earring(models.Model):
     id = models.CharField(max_length=255, default="E-", primary_key=True)
@@ -49,6 +51,7 @@ class Earring(models.Model):
     latkha = models.TextField(blank=True, null=True)
     price = models.BigIntegerField(blank=True, null=True)
     purchased = models.BooleanField()
+    last_updated = models.DateTimeField(auto_now=True)
 
 class Ring(models.Model):
     id = models.CharField(max_length=255, default="R-", primary_key=True)
@@ -62,6 +65,7 @@ class Ring(models.Model):
     latkha = models.TextField(blank=True, null=True)
     price = models.BigIntegerField(blank=True, null=True)
     purchased = models.BooleanField()
+    last_updated = models.DateTimeField(auto_now=True)
 
 class Handchain(models.Model):
     id = models.CharField(max_length=255, default="H-", primary_key=True)
@@ -75,6 +79,7 @@ class Handchain(models.Model):
     latkha = models.TextField(blank=True, null=True)
     price = models.BigIntegerField(blank=True, null=True)
     purchased = models.BooleanField()
+    last_updated = models.DateTimeField(auto_now=True)
 
 class Pendant(models.Model):
     id = models.CharField(max_length=255, default="P-", primary_key=True)
@@ -88,6 +93,7 @@ class Pendant(models.Model):
     latkha = models.TextField(blank=True, null=True)
     price = models.BigIntegerField(blank=True, null=True)
     purchased = models.BooleanField()
+    last_updated = models.DateTimeField(auto_now=True)
 
 def get_default_necklace_content_type_id():
     """Retrieve the ContentType ID for the Necklace model."""
