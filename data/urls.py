@@ -15,6 +15,7 @@ urlpatterns = [
   path('check-product/<str:product_id>/', check_product, name='check_product'),
   path('add-form/<str:product_id>/', add_form, name='add_form'),
   path('update-form/<str:product_id>/', update_form, name='update_form'),
+  path('delete_product/<str:product_id>/',delete_product,name='delete_product'),
   path('settings/', settings_dashboard, name='settings'),  # Utilities page
   path('single-view/', single_view, name='single_view'),
   path('logout/',logout_view,name='logout'),

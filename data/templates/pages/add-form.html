@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="css/form.css">
-</head>
-<body>
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <link rel="stylesheet" href="{% static "css/form.css" %}">
     <div class="form-container">
         <div class="form-header">
         <p>Create Form</p>
@@ -87,8 +82,8 @@
             <input type="submit" value="Submit">
         </form>
     </div>
-    </div>
-    <script src="js/number-validation.js"></script>
-    <script src="js/create-form.js"></script>
-</body>
-</html>
+    
+
+    <script src="{% static "js/number-validation.js" %}"></script>
+    <script src="{% static "js/create-form.js" %}"></script>
+{% endblock content %}

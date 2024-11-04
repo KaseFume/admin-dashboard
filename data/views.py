@@ -475,18 +475,33 @@ def update_product(request, product_id):
 
         # Handle images to be removed
         images_to_remove_paths = json.loads(request.POST.get('images_to_remove_paths', '[]'))
+
         for img_path in images_to_remove_paths:
             try:
-                # Attempt to get the image instance from the path
+                if img_path.startswith('/'):
+                    img_path = img_path[8:]
+                # Attempt to get the image instance using a relative path
                 image = Image.objects.get(image=img_path)
-                # Check if the file exists before trying to delete it
-                if os.path.exists(image.image.path):
-                    os.remove(image.image.path)  # Delete file from storage
-                image.delete()  # Delete the database record
+                img_path = img_path.replace('\\', '/')
+                print(f"{img_path}")
+                # Confirm the image file path
+                file_path = img_path
+                
+                # Check if the file exists before deleting
+                if os.path.exists(file_path):
+                    os.remove(file_path)  # Delete file from storage
+                    print(f"Deleted file from storage: {file_path}")
+                else:
+                    print(f"File not found at path: {file_path}")
+                
+                # Delete the database record
+                image.delete()
+                print(f"Deleted Image record from database for path: {img_path}")
+                
             except Image.DoesNotExist:
                 print(f"Image not found in DB for path: {img_path}")  # Log for debugging
             except Exception as e:
-                print(f"Error deleting image {img_path}: {e}")  # Catch any other errors
+                print(f"Error deleting image {img_path}: {e}")
 
         product.save()  # Save updated product details
 
@@ -494,3 +509,43 @@ def update_product(request, product_id):
 
     # Render the update form with existing product data
     return render(request, 'pages/update_form.html', {'product': product})
+
+@login_required
+def delete_product(request, product_id):
+    # Define the model mapping for product types
+    model_mapping = {
+        'EPR-': EPRSet,
+        'E-': Earring,
+        'N-': Necklace,
+        'R-': Ring,
+        'H-': Handchain,
+        'P-': Pendant,
+    }
+
+    # Find the correct model based on the product ID prefix
+    product = None
+    for pfx, model in model_mapping.items():
+        if product_id.startswith(pfx):
+            product = get_object_or_404(model, id=product_id)
+            break
+
+    # If the product was found
+    if product:
+        # Delete related currency
+        content_type = ContentType.objects.get_for_model(product)
+        Currency.objects.filter(content_type=content_type, object_id=product_id).delete()
+
+        # Delete related images
+        related_images = Image.objects.filter(object_id=product_id)
+        for image in related_images:
+            # Delete the image file from storage
+            file_path = image.image.path
+            if os.path.exists(file_path):
+                os.remove(file_path)
+            # Delete the image record from the database
+            image.delete()
+
+        # Delete the product record
+        product.delete()
+
+    return form_view(request)

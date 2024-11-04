@@ -6,7 +6,7 @@
 <div class="form-container">
     <div class="form-header">
         <p>Update Form</p>
-        <button>Delete Product</button>
+        <a href='{% url "data:delete_product" product.id %}'><button>Delete Product</button></a>
     </div>
     <div class="input-group">
         <label for="productID" class="label">Product ID:&nbsp;</label>
