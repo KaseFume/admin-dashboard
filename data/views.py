@@ -13,6 +13,7 @@ import re
 from django.utils import timezone
 from django.http import JsonResponse
 from datetime import datetime
+import json
 # Create your views here
 
 @login_required(login_url='/accounts/send-otp/')
@@ -446,13 +447,23 @@ def update_product(request, product_id):
         # Update the last_updated field from the form input
         last_updated_str = request.POST.get('lastUpdated')
         if last_updated_str:
-            # Parse the formatted date string to a Python datetime object
             product.last_updated = datetime.strptime(last_updated_str, '%b %d %Y %I:%M %p')
 
         # Save the product
         product_type = type(product).__name__.lower()  # Get the class name of the product instance
-        product_directory = os.path.join(settings.MEDIA_ROOT, product_type, product.id)
+        
+        # Handle currency
+        selected_currency = request.POST.get('currency')
+        currency, created = Currency.objects.get_or_create(
+            content_type=ContentType.objects.get_for_model(product),
+            object_id=product_id,
+            defaults={'currencyType': selected_currency}
+        )
+        if not created and currency.currencyType != selected_currency:
+            currency.currencyType = selected_currency
+            currency.save()
 
+        product_directory = os.path.join(settings.MEDIA_ROOT, product_type, product.id)
         # Ensure the directory exists before attempting to access it
         if not os.path.exists(product_directory):
             os.makedirs(product_directory)
@@ -462,35 +473,20 @@ def update_product(request, product_id):
             for img in request.FILES.getlist('images'):
                 Image.objects.create(product=product, image=img)
 
-        # Handle deletion of images
-        images_to_remove = request.POST.getlist('images_to_remove')  # List of IDs of images to delete
-        for img_id in images_to_remove:
+        # Handle images to be removed
+        images_to_remove_paths = json.loads(request.POST.get('images_to_remove_paths', '[]'))
+        for img_path in images_to_remove_paths:
             try:
-                image = Image.objects.get(id=img_id)
-                image_path = image.image.path  # Get the actual file path
-                if os.path.exists(image_path):
-                    os.remove(image_path)  # Delete the image file from the filesystem
-                image.delete()  # Delete the Image instance from the database
+                # Attempt to get the image instance from the path
+                image = Image.objects.get(image=img_path)
+                # Check if the file exists before trying to delete it
+                if os.path.exists(image.image.path):
+                    os.remove(image.image.path)  # Delete file from storage
+                image.delete()  # Delete the database record
             except Image.DoesNotExist:
-                continue
-
-        # Handle replacement of images
-        images_to_replace = request.POST.getlist('images_to_replace')  # Example of IDs of images to replace
-        for img_id in images_to_replace:
-            try:
-                image = Image.objects.get(id=img_id)
-                # Remove the existing image file
-                if image.image and image.image.storage.exists(image.image.name):
-                    image_path = image.image.path  # Get the actual file path
-                    if os.path.exists(image_path):
-                        os.remove(image_path)  # Delete the image file
-                # Now replace it with the new image (assuming the new image comes from the request)
-                new_image = request.FILES.get('new_image_' + img_id)  # Example new image key
-                if new_image:
-                    image.image = new_image  # Assign new image
-                    image.save()  # Save the changes
-            except Image.DoesNotExist:
-                continue
+                print(f"Image not found in DB for path: {img_path}")  # Log for debugging
+            except Exception as e:
+                print(f"Error deleting image {img_path}: {e}")  # Catch any other errors
 
         product.save()  # Save updated product details
 

@@ -3,6 +3,7 @@ function initializeImageUploadPage(existingImages) {
     const imageUploadContainer = document.getElementById('imageUploadContainer');
     const addImageButton = document.getElementById('addImageButton');
     let currentImagesCount = existingImages.length;
+    let imagesToRemove = []; // Array to store image paths to delete
 
     function loadExistingImages(images) {
         images.forEach((imagePath, index) => {
@@ -10,36 +11,17 @@ function initializeImageUploadPage(existingImages) {
             imageWrapper.className = 'image-wrapper';
             imageWrapper.innerHTML = `
                 <img src="${imagePath}" class="image-preview" style="max-width: 200px; margin-top: 10px;" />
-                <button type="button" class="replace-button" data-index="${index}">Replace</button>
-                <button type="button" class="remove-button" data-index="${index}">Remove</button><br><br>
+                <input type="hidden" name="existing_image_paths" value="${imagePath}"> <!-- Track the image path -->
+                <button type="button" class="remove-button" data-path="${imagePath}">Remove</button><br><br>
             `;
             imageUploadContainer.appendChild(imageWrapper);
 
             // Add remove functionality
             imageWrapper.querySelector('.remove-button').addEventListener('click', () => {
-                imageWrapper.remove();
+                imagesToRemove.push(imagePath); // Add image path to deletion list
+                imageWrapper.remove(); // Remove the HTML element
                 currentImagesCount--;
                 checkImageLimit();
-            });
-
-            // Add replace functionality
-            imageWrapper.querySelector('.replace-button').addEventListener('click', () => {
-                const fileInput = document.createElement('input');
-                fileInput.type = 'file';
-                fileInput.accept = 'image/*';
-                fileInput.style.display = 'none';
-
-                fileInput.addEventListener('change', (event) => {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            imageWrapper.querySelector('.image-preview').src = e.target.result;
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-                fileInput.click();  // Trigger file input dialog
             });
         });
     }
@@ -90,6 +72,15 @@ function initializeImageUploadPage(existingImages) {
         addImageButton.disabled = currentImagesCount >= maxImages;
     }
 
+    // Add hidden field to store imagesToRemove array on form submission
+    function addImagesToRemoveField() {
+        const removeInput = document.createElement('input');
+        removeInput.type = 'hidden';
+        removeInput.name = 'images_to_remove_paths';
+        removeInput.value = JSON.stringify(imagesToRemove); // Convert array to JSON string
+        imageUploadContainer.appendChild(removeInput);
+    }
+
     // Load existing images if available
     if (existingImages.length > 0) {
         loadExistingImages(existingImages);
@@ -98,5 +89,5 @@ function initializeImageUploadPage(existingImages) {
     }
 
     addImageButton.addEventListener('click', handleNewImageUploads);
+    document.querySelector('form').addEventListener('submit', addImagesToRemoveField); // Add hidden field on submit
 }
-
