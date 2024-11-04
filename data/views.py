@@ -10,7 +10,9 @@ import os
 from accounts.models import CustomUser
 from django.db.models.functions import Cast
 import re
+from django.utils import timezone
 from django.http import JsonResponse
+from datetime import datetime
 # Create your views here
 
 @login_required(login_url='/accounts/send-otp/')
@@ -356,7 +358,59 @@ def add_form(request, product_id):
 
 @login_required(login_url='/accounts/send-otp')
 def update_form(request, product_id):
-    # Define a mapping of prefixes to models
+    # Map prefixes to models and folder names
+    model_mapping = {
+        'EPR-': EPRSet,
+        'E-': Earring,
+        'N-': Necklace,
+        'R-': Ring,
+        'H-': Handchain,
+        'P-': Pendant,
+    }
+    folder_mapping = {
+        'EPR-': 'eprset',
+        'E-': 'earring',
+        'N-': 'necklace',
+        'R-': 'ring',
+        'H-': 'handchain',
+        'P-': 'pendant',
+    }
+
+    prefix = None
+    product = None
+
+    for pfx, model in model_mapping.items():
+        if product_id.startswith(pfx):
+            prefix = pfx
+            product = get_object_or_404(model, id=product_id)
+            break
+
+    currency = Currency.objects.filter(content_type=ContentType.objects.get_for_model(product), object_id=product_id).first()
+
+    # Get the folder name for the product type
+    product_type = folder_mapping.get(prefix, '')
+
+    # Determine the directory and gather existing images
+    image_directory = os.path.join(settings.MEDIA_ROOT, product_type, product_id)
+    existing_images = []
+
+    if os.path.isdir(image_directory):
+        for filename in os.listdir(image_directory):
+            if filename.endswith(('.jpg', '.jpeg', '.png')):
+                existing_images.append(f"/images/{product_type}/{product_id}/{filename}")
+
+    context = {
+        'product': product,
+        'currency': currency,
+        'selected_prefix': prefix,
+        'existing_images': existing_images,
+    }
+
+    return render(request, 'pages/update-form.html', context)
+
+@login_required
+def update_product(request, product_id):
+    # Define the model mapping for product types
     model_mapping = {
         'EPR-': EPRSet,
         'E-': Earring,
@@ -366,28 +420,81 @@ def update_form(request, product_id):
         'P-': Pendant,
     }
 
-    # Determine the prefix and fetch the corresponding product
     prefix = None
     product = None
-    
+
+    # Find the correct model based on the product ID prefix
     for pfx, model in model_mapping.items():
         if product_id.startswith(pfx):
             prefix = pfx
             product = get_object_or_404(model, id=product_id)
-            break  # Exit the loop once the correct prefix is found
+            break
 
-    # If the product was not found, you might want to handle it appropriately
-    # if product is None:
-    #     return render(request, 'pages/error.html', {'message': 'Product not found.'})  # Example error handling
+    if request.method == 'POST':
+        # Update the product fields
+        product.name = request.POST.get('name')
+        product.total_weight = request.POST.get('total_weight')
+        product.gold_net_weight = request.POST.get('gold_net_weight')
+        product.gems_1 = request.POST.get('gems_1')
+        product.gems_2 = request.POST.get('gems_2')
+        product.gems_3 = request.POST.get('gems_3')
+        product.a_ywrt = request.POST.get('a_ywrt')
+        product.latkha = request.POST.get('latkha')
+        product.price = request.POST.get('price')
+        product.purchased = 'purchased' in request.POST
+        
+        # Update the last_updated field from the form input
+        last_updated_str = request.POST.get('lastUpdated')
+        if last_updated_str:
+            # Parse the formatted date string to a Python datetime object
+            product.last_updated = datetime.strptime(last_updated_str, '%b %d %Y %I:%M %p')
 
-    # Retrieve the currency for the product
-    currency = Currency.objects.filter(content_type=ContentType.objects.get_for_model(product), object_id=product_id).first()
+        # Save the product
+        product_type = type(product).__name__.lower()  # Get the class name of the product instance
+        product_directory = os.path.join(settings.MEDIA_ROOT, product_type, product.id)
 
-    # Pass the product, currency, and prefix to the template
-    context = {
-        'product': product,
-        'currency': currency,
-        'selected_prefix': prefix,  # Pass the selected prefix to the template
-    }
+        # Ensure the directory exists before attempting to access it
+        if not os.path.exists(product_directory):
+            os.makedirs(product_directory)
 
-    return render(request, 'pages/update-form.html', context)
+        # Handle image uploads
+        if 'images' in request.FILES:
+            for img in request.FILES.getlist('images'):
+                Image.objects.create(product=product, image=img)
+
+        # Handle deletion of images
+        images_to_remove = request.POST.getlist('images_to_remove')  # List of IDs of images to delete
+        for img_id in images_to_remove:
+            try:
+                image = Image.objects.get(id=img_id)
+                image_path = image.image.path  # Get the actual file path
+                if os.path.exists(image_path):
+                    os.remove(image_path)  # Delete the image file from the filesystem
+                image.delete()  # Delete the Image instance from the database
+            except Image.DoesNotExist:
+                continue
+
+        # Handle replacement of images
+        images_to_replace = request.POST.getlist('images_to_replace')  # Example of IDs of images to replace
+        for img_id in images_to_replace:
+            try:
+                image = Image.objects.get(id=img_id)
+                # Remove the existing image file
+                if image.image and image.image.storage.exists(image.image.name):
+                    image_path = image.image.path  # Get the actual file path
+                    if os.path.exists(image_path):
+                        os.remove(image_path)  # Delete the image file
+                # Now replace it with the new image (assuming the new image comes from the request)
+                new_image = request.FILES.get('new_image_' + img_id)  # Example new image key
+                if new_image:
+                    image.image = new_image  # Assign new image
+                    image.save()  # Save the changes
+            except Image.DoesNotExist:
+                continue
+
+        product.save()  # Save updated product details
+
+        return form_view(request)
+
+    # Render the update form with existing product data
+    return render(request, 'pages/update_form.html', {'product': product})

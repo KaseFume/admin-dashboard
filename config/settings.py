@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'data',
     'prod_detail'
 ]
+# pip install pytz
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -108,8 +109,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
-
+# settings.py
+TIME_ZONE = 'Asia/Yangon'  # For GMT+6:30
 USE_I18N = True
 
 USE_TZ = True
