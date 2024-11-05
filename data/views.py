@@ -14,6 +14,10 @@ from django.utils import timezone
 from django.http import JsonResponse
 from datetime import datetime
 import json
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse
+import pandas as pd
+import zipfile
 # Create your views here
 
 @login_required(login_url='/accounts/send-otp/')
@@ -315,7 +319,6 @@ def ring(request):
 
 @login_required(login_url='/accounts/send-otp/')
 def form_view(request):
-
     return render(request, 'pages/form.html')
 
 @login_required(login_url='/accounts/send-otp/')
@@ -325,6 +328,55 @@ def settings_dashboard(request):
 @login_required(login_url='/accounts/send-otp/')
 def single_view(request):
     return render(request, 'pages/single-view.html')
+
+@login_required(login_url='/accounts/send-otp/')
+def read_item(request, product_id):
+    # Extract the prefix to identify the jewellery type
+    prefix = product_id.split('-')[0]
+
+    # Map prefixes to models and corresponding directory names
+    model_map = {
+        'E': (Earring, 'earring'),
+        'N': (Necklace, 'necklace'),
+        'R': (Ring, 'ring'),
+        'H': (Handchain, 'handchain'),
+        'P': (Pendant, 'pendant'),
+        'EPR': (EPRSet, 'eprset')
+    }
+    
+    # Initialize context
+    context = {
+        'error_message': None  # Default to None
+    }
+
+    # Get the model and directory name from the map
+    try:
+        model, dir_name = model_map.get(prefix)
+        # Fetch the product
+        product = model.objects.get(id=product_id)
+    except (ObjectDoesNotExist, TypeError):
+        # Handle product not found
+        context['error_message'] = "Product not found."
+        product = None  # Ensure product is None if not found
+
+    # Get currency information (assuming a single currency for simplicity)
+    currency = Currency.objects.first()  # Adjust this based on your actual logic
+
+    # Construct the image path based on MEDIA_ROOT, jewellery type, and product details
+    image_dir = os.path.join(settings.MEDIA_ROOT, dir_name, product_id)
+    image_paths = []
+    if os.path.isdir(image_dir):
+        for image_name in os.listdir(image_dir):
+            image_paths.append(os.path.join(settings.MEDIA_URL, dir_name, product_id, image_name))
+
+    # Pass context to the template
+    context.update({
+        'product': product,
+        'selected_prefix': f"{prefix}-",
+        'currency': currency.currencyType if currency else "MMK",  # Default to "MMK" if currency not found
+        'image_paths': image_paths  # List of image URLs
+    })
+    return render(request, 'pages/single-view.html', context)
 
 @login_required(login_url='/accounts/send-otp/')
 def logout_view(request):
@@ -438,7 +490,7 @@ def update_form(request, product_id):
 
     return render(request, 'pages/update-form.html', context)
 
-@login_required
+@login_required(login_url='/accounts/send-otp/')
 def update_product(request, product_id):
     # Define the model mapping for product types
     model_mapping = {
@@ -539,7 +591,7 @@ def update_product(request, product_id):
     # Render the update form with existing product data
     return render(request, 'pages/update_form.html', {'product': product})
 
-@login_required
+@login_required(login_url='/accounts/send-otp/')
 def delete_product(request, product_id):
     # Define the model mapping for product types
     model_mapping = {
@@ -579,7 +631,7 @@ def delete_product(request, product_id):
 
     return form_view(request)
 
-@login_required
+@login_required(login_url='/accounts/send-otp/')
 def add_product(request, product_id):
     # Define the model mapping for product types
     model_mapping = {
@@ -648,3 +700,74 @@ def add_product(request, product_id):
 
     # Render the add form
     return render(request, 'pages/add_form.html', {'product_model': product_model})
+
+def export_data(request):
+    # Helper function to convert datetime fields to formatted strings
+    def convert_datetimes(data):
+        for item in data:
+            for key, value in item.items():
+                if isinstance(value, (timezone.datetime, timezone.datetime)):  # Check if value is a datetime object
+                    item[key] = value.strftime('%Y-%m-%d %H:%M:%S')  # Convert to string
+        return data
+
+    # Prepare data for each model
+    earring_data = list(Earring.objects.values())
+    necklace_data = list(Necklace.objects.values())
+    handchain_data = list(Handchain.objects.values())
+    ring_data = list(Ring.objects.values())
+    pendant_data = list(Pendant.objects.values())
+    eprset_data = list(EPRSet.objects.values())
+    currency_data = list(Currency.objects.values())
+
+    # Convert any datetime fields to formatted strings
+    earring_data = convert_datetimes(earring_data)
+    necklace_data = convert_datetimes(necklace_data)
+    handchain_data = convert_datetimes(handchain_data)
+    ring_data = convert_datetimes(ring_data)
+    pendant_data = convert_datetimes(pendant_data)
+    eprset_data = convert_datetimes(eprset_data)
+    currency_data = convert_datetimes(currency_data)
+
+    # Create a Pandas Excel writer using XlsxWriter as the engine.
+    with pd.ExcelWriter('exported_data.xlsx', engine='xlsxwriter') as writer:
+        # Convert dataframes and write to Excel
+        pd.DataFrame(earring_data).to_excel(writer, sheet_name='Earring', index=False)
+        pd.DataFrame(necklace_data).to_excel(writer, sheet_name='Necklace', index=False)
+        pd.DataFrame(handchain_data).to_excel(writer, sheet_name='Handchain', index=False)
+        pd.DataFrame(ring_data).to_excel(writer, sheet_name='Ring', index=False)
+        pd.DataFrame(pendant_data).to_excel(writer, sheet_name='Pendant', index=False)
+        pd.DataFrame(eprset_data).to_excel(writer, sheet_name='EPRSet', index=False)
+        pd.DataFrame(currency_data).to_excel(writer, sheet_name='Currency', index=False)
+
+    # Prepare response to send file
+    with open('exported_data.xlsx', 'rb') as f:
+        response = HttpResponse(f.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename=exported_data.xlsx'
+    return response
+
+
+def save_local(request):
+    # Path to your images directory
+    images_path = os.path.join(settings.MEDIA_ROOT)
+
+    # List of folders to include in the zip
+    folders = ['necklace', 'earring', 'handchain', 'eprset', 'ring', 'pendant']
+
+    # Create a zip file in memory
+    zip_filename = 'images.zip'
+    zip_buffer = zipfile.ZipFile(zip_filename, 'w')
+
+    for folder in folders:
+        folder_path = os.path.join(images_path, folder)
+        for root, dirs, files in os.walk(folder_path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                zip_buffer.write(file_path, os.path.relpath(file_path, images_path))
+
+    zip_buffer.close()
+
+    # Prepare response to send the zip file
+    with open(zip_filename, 'rb') as f:
+        response = HttpResponse(f.read(), content_type='application/zip')
+        response['Content-Disposition'] = f'attachment; filename={zip_filename}'
+    return response

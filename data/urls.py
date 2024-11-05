@@ -18,8 +18,11 @@ urlpatterns = [
   path('delete_product/<str:product_id>/',delete_product,name='delete_product'),
   path('settings/', settings_dashboard, name='settings'),  # Utilities page
   path('single-view/', single_view, name='single_view'),
+  path('read-item/<str:product_id>/',read_item,name='read_item'),
   path('logout/',logout_view,name='logout'),
   path('update_product/<str:product_id>/', update_product, name='update_product'),
   path('add_product/<str:product_id>/',add_product,name="add_product"),
+  path('export-data/', export_data, name='export_data'),
+  path('save-local/', save_local, name='save_local'),
 ]
 

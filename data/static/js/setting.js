@@ -1,11 +1,11 @@
 function exportData() {
             // Implement export functionality here
-            alert("Data exported successfully!");
+            window.location.href = "../export-data/";
         }
 
         function saveData() {
             // Implement save functionality here
-            alert("Data saved locally!");
+            window.location.href = "../save-local/";
         }
 
         function toggleContactDetails() {
