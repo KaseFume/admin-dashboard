@@ -25,7 +25,7 @@ urlpatterns = [
   path('export-data/', export_data, name='export_data'),
   path('save-local/', save_local, name='save_local'),
   path('add-user/', add_user, name='add_user'),
-  path('edit-user/<str:username>/', edit_user, name='edit_user'),
-  path('delete-user/<str:username>/', delete_user, name='delete_user'),
+  path('edit-user/<str:email>/', edit_user, name='edit_user'),
+  path('delete-user/<str:email>/', delete_user, name='delete_user'),
 ]
 

@@ -32,7 +32,7 @@ function exportData() {
             const email = prompt("Enter email:");
             const password = prompt("Enter password:");
         
-            fetch("{% url 'data:add_user' %}", {
+            fetch("../../dashboard/add-user/", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

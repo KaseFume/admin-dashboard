@@ -12,7 +12,7 @@
             <h3>Auth-Control</h3>
             <p>Manage user authentication settings.</p>
             <button class="toggle-button" onclick="toggleUserManagementDetails()">Manage Users</button>
-            <div class="details" id="user-management-details">
+            <div class="details" id="user-management-details" style="display: none;">
                 <button onclick="addNewUser()">Add New User</button>
                 <table>
                     <thead>
@@ -54,15 +54,124 @@
             <h3>Contact Dev</h3>
             <p>Reach out to the development team for support.</p>
             <button class="toggle-button" onclick="toggleContactDetails()">Contact Us</button>
-        <div class="details" id="contact-details">
-            <p>If you have any questions or need support, please reach out to our development team at:</p>
-            <p>Email: devminthant@yahoo.com</p>
-            <p>Phone: +959899945223</p>
-        </div>
-    </li>
-</ul>
+            <div class="details" id="contact-details" style="display: none;">
+                <p>If you have any questions or need support, please reach out to our development team at:</p>
+                <p>Email: devminthant@yahoo.com</p>
+                <p>Phone: +959899945223</p>
+            </div>
+        </li>
+    </ul>
 </div>
-</li>
-</ul>
-<script src="{% static "js/setting.js" %}"></script>
+
+<script>
+    function exportData() {
+        window.location.href = "{% url 'data:export_data' %}";
+    }
+
+    function saveData() {
+        window.location.href = "{% url 'data:save_local' %}";
+    }
+
+    function toggleContactDetails() {
+        const details = document.getElementById('contact-details');
+        details.style.display = details.style.display === "block" ? "none" : "block";
+    }
+    
+    function toggleUserManagementDetails() {
+        const details = document.getElementById('user-management-details');
+        details.style.display = details.style.display === "block" ? "none" : "block";
+    }
+
+    function addNewUser() {
+        const email = prompt("Enter email:");
+        const password = prompt("Enter password:");
+    
+        fetch("../../dashboard/add-user/", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ email, password })  // Send JSON payload
+        })
+        .then(response => {
+            return response.json().then(data => ({ status: response.status, body: data }));
+        })
+        .then(data => {
+            if (data.status === 200) {
+                alert(data.body.message);
+                location.reload();  // Reload the page
+            } else {
+                alert('Error: ' + data.body.error);
+            }
+        })
+        .catch(error => alert('Error: ' + error.message));
+    }
+    
+    function editUser(email) {
+        const newEmail = prompt("Enter new email for " + email + ":");
+    
+        if (!newEmail) return;  // Do nothing if no new email is provided
+    
+        fetch(`../../dashboard/edit-user/${email}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ email: newEmail })
+        })
+        .then(response => {
+            return response.json().then(data => ({ status: response.status, body: data }));
+        })
+        .then(data => {
+            if (data.status === 200) {
+                alert(data.body.message);
+                location.reload();  // Reload the page
+            } else {
+                alert('Error: ' + data.body.error);
+            }
+        })
+        .catch(error => alert('Error: ' + error.message));
+    }
+    
+    function deleteUser(email) {
+        if (confirm(`Are you sure you want to delete user ${email}?`)) {
+            fetch(`../../dashboard/delete-user/${email}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => {
+                return response.json().then(data => ({ status: response.status, body: data }));
+            })
+            .then(data => {
+                if (data.status === 200) {
+                    alert(data.body.message);
+                    location.reload();  // Reload the page
+                } else {
+                    alert('Error: ' + data.body.error);
+                }
+            })
+            .catch(error => alert('Error: ' + error.message));
+        }
+    }
+    
+    // Helper function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }    
+</script>
 {% endblock %}

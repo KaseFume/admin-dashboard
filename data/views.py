@@ -778,36 +778,50 @@ def save_local(request):
 
 def add_user(request):
     if request.method == "POST":
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+        try:
+            # Parse JSON data from request body
+            data = json.loads(request.body)
+            email = data.get('email')
+            password = data.get('password')
 
-        # Basic validation
-        if not email or not password:
-            return JsonResponse({"error": "Email and password are required"}, status=400)
+            # Basic validation
+            if not email or not password:
+                return JsonResponse({"error": "Email and password are required"}, status=400)
 
-        # Create a new user
-        user = CustomUser(email=email)
-        user.set_password(password)  # Use set_password to hash the password
-        user.is_active = True
-        user.is_staff = True  # Regular user
-        user.is_admin = True   # Regular user
-        user.save()
-        return JsonResponse({"message": "User added successfully", "email": user.email})
+            # Create a new user
+            user = CustomUser(email=email)
+            user.set_password(password)  # Use set_password to hash the password
+            user.is_active = True
+            user.is_staff = True  # Regular user
+            user.is_admin = True   # Regular user
+            user.save()
+            return JsonResponse({"message": "User added successfully", "email": user.email}, status=200)
 
-    return JsonResponse({"error": "Invalid request"}, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data"}, status=400)
+
+    return JsonResponse({"error": "Invalid request method"}, status=400)
 
 def edit_user(request, email):
     if request.method == "POST":
-        user = get_object_or_404(CustomUser, email=email)
-        new_email = request.POST.get('email', user.email)  # Update email
-        user.email = new_email
-        user.save()
-        return JsonResponse({"message": "User updated successfully", "email": user.email})
+        try:
+            data = json.loads(request.body)
+            new_email = data.get('email')
+            if not new_email:
+                return JsonResponse({"error": "New email is required"}, status=400)
 
-    return JsonResponse({"error": "Invalid request"}, status=400)
+            user = get_object_or_404(CustomUser, email=email)
+            user.email = new_email
+            user.save()
+            return JsonResponse({"message": "User updated successfully", "email": user.email}, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data"}, status=400)
+
+    return JsonResponse({"error": "Invalid request method"}, status=400)
 
 @require_POST
 def delete_user(request, email):
     user = get_object_or_404(CustomUser, email=email)
     user.delete()
-    return JsonResponse({"message": "User deleted successfully"})
+    return JsonResponse({"message": "User deleted successfully"}, status=200)
