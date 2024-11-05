@@ -789,8 +789,8 @@ def add_user(request):
         user = CustomUser(email=email)
         user.set_password(password)  # Use set_password to hash the password
         user.is_active = True
-        user.is_staff = False  # Regular user
-        user.is_admin = False   # Regular user
+        user.is_staff = True  # Regular user
+        user.is_admin = True   # Regular user
         user.save()
         return JsonResponse({"message": "User added successfully", "email": user.email})
 
