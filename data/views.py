@@ -18,6 +18,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 import pandas as pd
 import zipfile
+from django.views.decorators.http import require_POST
+from accounts.models import CustomUser 
+from django.contrib.auth.hashers import make_password
 # Create your views here
 
 @login_required(login_url='/accounts/send-otp/')
@@ -323,7 +326,8 @@ def form_view(request):
 
 @login_required(login_url='/accounts/send-otp/')
 def settings_dashboard(request):
-    return render(request, 'pages/setting.html')
+    users = CustomUser.objects.all()  # Fetch all users from the CustomUser model
+    return render(request, 'pages/setting.html', {'users': users})
 
 @login_required(login_url='/accounts/send-otp/')
 def single_view(request):
@@ -771,3 +775,39 @@ def save_local(request):
         response = HttpResponse(f.read(), content_type='application/zip')
         response['Content-Disposition'] = f'attachment; filename={zip_filename}'
     return response
+
+def add_user(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        # Basic validation
+        if not email or not password:
+            return JsonResponse({"error": "Email and password are required"}, status=400)
+
+        # Create a new user
+        user = CustomUser(email=email)
+        user.set_password(password)  # Use set_password to hash the password
+        user.is_active = True
+        user.is_staff = False  # Regular user
+        user.is_admin = False   # Regular user
+        user.save()
+        return JsonResponse({"message": "User added successfully", "email": user.email})
+
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+def edit_user(request, email):
+    if request.method == "POST":
+        user = get_object_or_404(CustomUser, email=email)
+        new_email = request.POST.get('email', user.email)  # Update email
+        user.email = new_email
+        user.save()
+        return JsonResponse({"message": "User updated successfully", "email": user.email})
+
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+@require_POST
+def delete_user(request, email):
+    user = get_object_or_404(CustomUser, email=email)
+    user.delete()
+    return JsonResponse({"message": "User deleted successfully"})

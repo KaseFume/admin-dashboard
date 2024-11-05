@@ -24,5 +24,8 @@ urlpatterns = [
   path('add_product/<str:product_id>/',add_product,name="add_product"),
   path('export-data/', export_data, name='export_data'),
   path('save-local/', save_local, name='save_local'),
+  path('add-user/', add_user, name='add_user'),
+  path('edit-user/<str:username>/', edit_user, name='edit_user'),
+  path('delete-user/<str:username>/', delete_user, name='delete_user'),
 ]
 

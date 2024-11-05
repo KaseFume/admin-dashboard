@@ -28,18 +28,82 @@ function exportData() {
             const isHidden = passwordField.style.display === "none";
             passwordField.style.display = isHidden ? "inline" : "none"; // Toggle visibility
         }
-
         function addNewUser() {
-            // Implement add new user functionality here
-            alert("Add New User functionality to be implemented.");
+            const email = prompt("Enter email:");
+            const password = prompt("Enter password:");
+        
+            fetch("{% url 'data:add_user' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ email, password })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => alert(data.message))
+            .catch(error => alert('Error: ' + error.message));
         }
-
-        function editUser(username) {
-            // Implement edit user functionality here
-            alert("Edit user: " + username);
+        
+        function editUser(email) {
+            const newEmail = prompt("Enter new email for " + email + ":");
+        
+            fetch("{% url 'data:edit_user' email=email %}", { // Updated to correctly format the URL
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ email: newEmail })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => alert(data.message))
+            .catch(error => alert('Error: ' + error.message));
         }
-
-        function deleteUser(username) {
-            // Implement delete user functionality here
-            alert("Delete user: " + username);
+        
+        function deleteUser(email) {
+            if (confirm(`Are you sure you want to delete user ${email}?`)) {
+                fetch("{% url 'data:delete_user' email=email %}", { // Updated to correctly format the URL
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => alert(data.message))
+                .catch(error => alert('Error: ' + error.message));
+            }
         }
+        
+        // Helper function to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Check if this cookie string begins with the name we want
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+            

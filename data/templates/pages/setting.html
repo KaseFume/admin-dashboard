@@ -12,36 +12,30 @@
             <h3>Auth-Control</h3>
             <p>Manage user authentication settings.</p>
             <button class="toggle-button" onclick="toggleUserManagementDetails()">Manage Users</button>
-        <div class="details" id="user-management-details">
-            <button onclick="addNewUser()">Add New User</button>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Password</th>
-                        <th>Email</th>
-                        <th>Last Login Session</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="user-table-body">
-                    <tr>
-                        <td>john_doe</td>
-                        <td>
-                            <span id="password-1">password123</span>
-                            <span class="hide-icon" onclick="togglePassword('password-1')">👁️</span>
-                        </td>
-                        <td>john@example.com</td>
-                        <td>2023-10-01 12:30 PM</td>
-                        <td>
-                            <button onclick="editUser('john_doe')">Edit</button>
-                            <button onclick="deleteUser('john_doe')">Delete</button>
-                        </td>
-                    </tr>
-                    <!-- Additional user rows can be added here -->
-                </tbody>
-            </table>
-        </div>
+            <div class="details" id="user-management-details">
+                <button onclick="addNewUser()">Add New User</button>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Last Login Session</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-table-body">
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.last_login }}</td>
+                            <td>
+                                <button onclick="editUser('{{ user.email }}')">Edit</button>
+                                <button onclick="deleteUser('{{ user.email }}')">Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </li>
 
         <li class="utility-card" id="export-data">
