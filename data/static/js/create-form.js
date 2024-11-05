@@ -1,18 +1,18 @@
-// Function definition
+// Function to initialize the image upload functionality and set up event listeners
 function initializeImageUploadPage() {
     const maxImages = 10;
     const imageUploadContainer = document.getElementById('imageUploadContainer');
     const addImageButton = document.getElementById('addImageButton');
-    const numberInput = document.getElementById('numberInput'); // Assuming this is the ID of the input
+    const numberInput = document.getElementById('numberInput');
 
     console.log('Number Validation is running');
 
-    // Optional: Add validation to only allow numbers
+    // Optional: Add validation to only allow numbers in the numberInput field
     numberInput.addEventListener('input', function() {
-        this.value = this.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+        this.value = this.value.replace(/[^0-9]/g, '');
     });
 
-    // Function to set up the file input change event listener
+    // Function to set up the file input change event listener for previewing images
     function setupFileInput(fileInput, imagePreview) {
         fileInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
@@ -27,7 +27,7 @@ function initializeImageUploadPage() {
         });
     }
 
-    // Set up the first image input
+    // Initialize the first image input for preview
     const firstFileInput = document.querySelector('.image-input');
     const firstImagePreview = document.createElement('img');
     firstImagePreview.className = 'image-preview';
@@ -37,6 +37,7 @@ function initializeImageUploadPage() {
     imageUploadContainer.appendChild(firstImagePreview);
     setupFileInput(firstFileInput, firstImagePreview);
 
+    // Add more image upload fields when "Add Another Image" is clicked
     addImageButton.addEventListener('click', () => {
         const currentImages = document.querySelectorAll('.image-input').length;
         if (currentImages >= maxImages) {
@@ -60,11 +61,27 @@ function initializeImageUploadPage() {
         removeButton.addEventListener('click', () => newInput.remove());
     });
 
+    // Set initial value for the lastUpdated field to the current date and time
     function setLastUpdatedTime() {
         const now = new Date();
-        now.setMinutes(now.getMinutes() + (6 * 60) + 30); // Adjust to GMT+6:30
-        const formattedDateTime = now.toISOString().slice(0, 19).replace('T', ' ');
-        document.getElementById('lastUpdated').value = formattedDateTime;
+    
+        // Calculate the offset in minutes for GMT+6:30
+        const offset = 6 * 60 + 30; // 6 hours and 30 minutes
+        const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000); // Convert local time to UTC
+        const gmt630Time = new Date(utcTime + (offset * 60000)); // Adjust to GMT+6:30
+    
+        // Format the date to "Nov. 3, 2024, 3:32 p.m."
+        const options = { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric', 
+            hour: 'numeric', 
+            minute: 'numeric', 
+            hour12: true 
+        };
+        const formattedDateTime = gmt630Time.toLocaleString('en-US', options).replace(',', ''); // Remove comma between date and time
+    
+        document.getElementById('lastUpdated').value = formattedDateTime; // Set the current time
     }
 
     setLastUpdatedTime();

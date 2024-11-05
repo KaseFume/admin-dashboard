@@ -354,8 +354,37 @@ def check_product(request, product_id):
 
 @login_required(login_url='/accounts/send-otp')
 def add_form(request, product_id):
+    # Map prefixes to models and folder names
+    model_mapping = {
+        'EPR-': EPRSet,
+        'E-': Earring,
+        'N-': Necklace,
+        'R-': Ring,
+        'H-': Handchain,
+        'P-': Pendant,
+    }
+    folder_mapping = {
+        'EPR-': 'eprset',
+        'E-': 'earring',
+        'N-': 'necklace',
+        'R-': 'ring',
+        'H-': 'handchain',
+        'P-': 'pendant',
+    }
+
+    prefix = None
+    product = None
+
+    for pfx, model in model_mapping.items():
+        if product_id.startswith(pfx):
+            prefix = pfx
+            break
+    context = {
+        'product_id': product_id,
+        'selected_prefix': prefix,
+    }
     
-    return render(request, 'pages/add-form.html')
+    return render(request, 'pages/add-form.html',context)
 
 @login_required(login_url='/accounts/send-otp')
 def update_form(request, product_id):
@@ -549,3 +578,73 @@ def delete_product(request, product_id):
         product.delete()
 
     return form_view(request)
+
+@login_required
+def add_product(request, product_id):
+    # Define the model mapping for product types
+    model_mapping = {
+        'EPR-': EPRSet,
+        'E-': Earring,
+        'N-': Necklace,
+        'R-': Ring,
+        'H-': Handchain,
+        'P-': Pendant,
+    }
+
+    # Determine the correct model based on the product ID prefix
+    product = None
+    for pfx, model in model_mapping.items():
+        if product_id.startswith(pfx):
+            product_model = model
+            break
+    else:
+        return redirect('some_error_page')  # Handle the case where the prefix is invalid
+
+    if request.method == 'POST':
+        # Create a new instance of the determined product model
+        product = product_model()
+        product.id=product_id
+        # Set the fields from the form data
+        product.name = request.POST.get('name')
+        product.total_weight = request.POST.get('total_weight')
+        product.gold_net_weight = request.POST.get('gold_net_weight')
+        product.gems_1 = request.POST.get('gems_1')
+        product.gems_2 = request.POST.get('gems_2')
+        product.gems_3 = request.POST.get('gems_3')
+        product.a_ywrt = request.POST.get('a_ywrt')
+        product.latkha = request.POST.get('latkha')
+        product.price = request.POST.get('price')
+        product.purchased = 'purchased' in request.POST
+        
+        # Set the last_updated field from the form input
+        last_updated_str = request.POST.get('lastUpdated')
+        if last_updated_str:
+            product.last_updated = datetime.strptime(last_updated_str, '%b %d %Y, %I:%M %p')
+        else:
+            product.last_updated = timezone.now()  # Set default timestamp if not provided
+
+        # Save the product
+        product.save()
+
+        # Handle currency
+        selected_currency = request.POST.get('currency')
+        Currency.objects.create(
+            content_type=ContentType.objects.get_for_model(product),
+            object_id=product.id,
+            currencyType=selected_currency
+        )
+
+        # Create a directory for the product's images
+        product_type = type(product).__name__.lower()
+        product_directory = os.path.join(settings.MEDIA_ROOT, product_type, str(product.id))
+        os.makedirs(product_directory, exist_ok=True)
+
+        # Handle image uploads
+        if 'images' in request.FILES:
+            for img in request.FILES.getlist('images'):
+                Image.objects.create(product=product, image=img)
+
+        return form_view(request) # Redirect to a success page after creation
+
+    # Render the add form
+    return render(request, 'pages/add_form.html', {'product_model': product_model})
