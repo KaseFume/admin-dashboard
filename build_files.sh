@@ -15,7 +15,6 @@ pip install tzdata==2024.1
 pip install whitenoise==6.8.2
 pip install XlsxWriter==3.2.0
 pip install zipp==3.20.0
-pip install six==1.16.0
 
 # Collect static files for Django
 python3 manage.py collectstatic --noinput
