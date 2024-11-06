@@ -1,0 +1,165 @@
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
+  padding: 20px;
+}
+
+/* Main Container */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 20px; /* Reduced padding for smaller screens */
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Product Title */
+.product-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2rem; /* Responsive font size */
+  font-weight: bold;
+  color: #333;
+}
+
+/* Image Slider */
+.slider {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.slider-wrapper {
+  overflow: hidden;
+  width: 100%;
+  height: 0; /* Set height to 0 initially */
+  padding-top: 56.25%; /* 16:9 Aspect Ratio (9 / 16 * 100) */
+  border-radius: 12px;
+  position: relative; /* To contain absolutely positioned children */
+}
+
+.slider-images {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  position: absolute; /* Positioning absolute to slide correctly */
+  top: 0; /* Align to the top of the wrapper */
+  left: 0; /* Align to the left of the wrapper */
+  width: 100%;
+  height: 100%; /* Ensure full height */
+}
+
+.slider-images img {
+  min-width: 100%; /* Each image takes up the full width of the container */
+  height: 100%; /* Each image takes up the full height of the container */
+  object-fit: cover; /* Cover the area while maintaining aspect ratio */
+  object-position: center; /* Center the image */
+  border-radius: 12px; /* Rounded corners */
+}
+
+/* Slider Buttons */
+.slider-btn {
+  z-index: 10000;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 10px; /* Reduced padding for smaller screens */
+  cursor: pointer;
+  font-size: 1.5rem; /* Responsive font size */
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.slider-btn.prev {
+  left: 10px;
+}
+
+.slider-btn.next {
+  right: 10px;
+}
+
+.slider-btn:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Product Info */
+.product-info p {
+  margin: 10px 0;
+  font-size: 1rem; /* Responsive font size */
+  color: #555;
+}
+
+.product-info p strong {
+  color: #333;
+}
+
+/* Purchase Section */
+.purchase-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.purchase-section label {
+  font-size: 1rem; /* Responsive font size */
+  color: #444;
+}
+
+input[type="checkbox"] {
+  margin-left: 8px;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .container {
+      padding: 15px; /* Adjust padding for smaller devices */
+  }
+
+  .product-title {
+      font-size: 1.8rem; /* Smaller title on medium devices */
+  }
+
+  .slider-btn {
+      padding: 8px; /* Smaller buttons on medium devices */
+      font-size: 1.2rem; /* Smaller button text */
+  }
+
+  .product-info p {
+      font-size: 0.9rem; /* Smaller text for product info */
+  }
+
+  .purchase-section label {
+      font-size: 0.9rem; /* Smaller text for purchase section */
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+      padding: 10px; /* Even smaller padding for mobile devices */
+  }
+
+  .product-title {
+      font-size: 1.5rem; /* Smaller title for mobile */
+  }
+
+  .slider-btn {
+      padding: 5px; /* Even smaller buttons for mobile */
+      font-size: 1rem; /* Smaller button text for mobile */
+  }
+
+  .product-info p {
+      font-size: 0.8rem; /* Smaller text for product info */
+  }
+
+  .purchase-section label {
+      font-size: 0.8rem; /* Smaller text for purchase section */
+  }
+}
