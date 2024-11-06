@@ -10,7 +10,6 @@ pip install pandas==2.2.3
 pip install python-dateutil==2.9.0.post0
 pip install pytz==2024.2
 pip install sqlparse==0.5.1
-pip install twilio==9.3.3
 pip install tzdata==2024.1
 pip install whitenoise==6.8.2
 pip install XlsxWriter==3.2.0
