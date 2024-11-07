@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-k0+iutm@j+n@8sp*)9)o8#u#%yrb)@6wiy%jvk-9n-uxr2t)3e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -85,13 +85,17 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # }
 
 DATABASES = {
+    # 'default':/ {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'admin',
+    #     'USER':'postgres',
+    #     'PASSWORD':'123',
+    #     'HOST':'localhost',
+    #     'PORT':'5432',
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'admin',
-        'USER':'postgres',
-        'PASSWORD':'123',
-        'HOST':'localhost',
-        'PORT':'5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
