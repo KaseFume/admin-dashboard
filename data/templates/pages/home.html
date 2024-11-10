@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-
+{% load custom_filters %}
+{% load static %}
 {% block content %}
 
 <div class="home-container">
@@ -12,49 +13,57 @@
                     <th>Type</th>
                     <th>Total Items</th>
                     <th>Total Purchased</th>
+                    <th>Instock</th>
                 </tr>
                 <tr>
                     <td>Necklace:</td>
                     <td class="amount">{{ total_necklaces }}</td>
                     <td class="amount">{{ purchased_necklaces }}</td>
+                    <td class="amount">{{ instock_necklaces }}</td>
                 </tr>
                 <tr>
                     <td>EPR Set:</td>
                     <td class="amount">{{ total_epr_sets }}</td>
                     <td class="amount">{{ purchased_epr_sets }}</td>
+                    <td class="amount">{{ instock_epr_sets }}</td>
                 </tr>
                 <tr>
                     <td>Earring:</td>
                     <td class="amount">{{ total_earrings }}</td>
                     <td class="amount">{{ purchased_earrings }}</td>
+                    <td class="amount">{{ instock_earrings }}</td>
                 </tr>
                 <tr>
                     <td>Ring:</td>
                     <td class="amount">{{ total_rings }}</td>
                     <td class="amount">{{ purchased_rings }}</td>
+                    <td class="amount">{{ instock_rings }}</td>
                 </tr>
                 <tr>
                     <td>Handchain:</td>
                     <td class="amount">{{ total_handchains }}</td>
                     <td class="amount">{{ purchased_handchains }}</td>
+                    <td class="amount">{{ instock_handchains }}</td>
                 </tr>
                 <tr>
                     <td>Pendant:</td>
                     <td class="amount">{{ total_pendants }}</td>
                     <td class="amount">{{ purchased_pendants }}</td>
+                    <td class="amount">{{ instock_pendants }}</td>
                 </tr>
                 <tr>
                     <td><strong>Total:</strong></td>
-                    <td class="amount"><strong>{{ total_necklaces|add:total_epr_sets|add:total_earrings|add:total_rings|add:total_handchains|add:total_pendants }}</strong></td>
-                    <td class="amount"><strong>{{ purchased_necklaces|add:purchased_epr_sets|add:purchased_earrings|add:purchased_rings|add:purchased_handchains|add:purchased_pendants }}</strong></td>
+                    <td class="amount"><strong>{{ total_items }}</strong></td>
+                    <td class="amount"><strong>{{ total_purchased }}</strong></td>
+                    <td class="amount"><strong>{{ total_instock }}</strong></td>
                 </tr>
                 <tr>
                     <td>Total Users:</td>
-                    <td colspan="2" class="amount">{{ total_users }}</td>
+                    <td colspan="3" class="amount">{{ total_users }}</td>
                 </tr>
             </table>
         </div>
-    </div>      
+    </div>
 </div>
 
 {% endblock %}

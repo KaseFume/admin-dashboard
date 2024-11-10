@@ -21,6 +21,7 @@ import zipfile
 from django.views.decorators.http import require_POST
 from accounts.models import CustomUser 
 from django.contrib.auth.hashers import make_password
+import pytz
 # Create your views here
 
 @login_required(login_url='/accounts/send-otp/')
@@ -44,24 +45,48 @@ def home(request):
     purchased_rings = Ring.objects.filter(purchased=True).count()
     purchased_handchains = Handchain.objects.filter(purchased=True).count()
     purchased_pendants = Pendant.objects.filter(purchased=True).count()
+    
+    instock_necklaces = total_necklaces - purchased_necklaces
+    instock_epr_sets = total_epr_sets - purchased_epr_sets
+    instock_earrings = total_earrings - purchased_earrings
+    instock_rings = total_rings - purchased_rings
+    instock_handchains = total_handchains - purchased_handchains
+    instock_pendants = total_pendants - purchased_pendants
 
     # Total users (including all types of users)
     total_users = CustomUser.objects.count()  # Count users from your CustomUser model
-
+    total_items = (
+        total_necklaces + total_epr_sets + total_earrings +
+        total_rings + total_handchains + total_pendants
+    )
+    total_purchased = (
+        purchased_necklaces + purchased_epr_sets + purchased_earrings +
+        purchased_rings + purchased_handchains + purchased_pendants
+    )
+    total_instock = total_items - total_purchased
     # Prepare context data
     context = {
         'total_necklaces': total_necklaces,
-        'total_epr_sets': total_epr_sets,
-        'total_earrings': total_earrings,
-        'total_rings': total_rings,
-        'total_handchains': total_handchains,
-        'total_pendants': total_pendants,
         'purchased_necklaces': purchased_necklaces,
+        'instock_necklaces': instock_necklaces,
+        'total_epr_sets': total_epr_sets,
         'purchased_epr_sets': purchased_epr_sets,
+        'instock_epr_sets': instock_epr_sets,
+        'total_earrings': total_earrings,
         'purchased_earrings': purchased_earrings,
+        'instock_earrings': instock_earrings,
+        'total_rings': total_rings,
         'purchased_rings': purchased_rings,
+        'instock_rings': instock_rings,
+        'total_handchains': total_handchains,
         'purchased_handchains': purchased_handchains,
+        'instock_handchains': instock_handchains,
+        'total_pendants': total_pendants,
         'purchased_pendants': purchased_pendants,
+        'instock_pendants': instock_pendants,
+        'total_items': total_items,
+        'total_purchased': total_purchased,
+        'total_instock': total_instock,
         'total_users': total_users,
     }
 
@@ -527,8 +552,12 @@ def update_product(request, product_id):
         product.a_ywrt = request.POST.get('a_ywrt')
         product.latkha = request.POST.get('latkha')
         product.price = request.POST.get('price')
-        product.purchased = 'purchased' in request.POST
-        
+        purchased = 'purchased' in request.POST
+        if purchased and not product.purchased_date:
+            product.purchased_date = timezone.now()
+        elif not purchased:
+            product.purchased_date = None  # Clear if no longer purchased
+        product.purchased = purchased
         # Update the last_updated field from the form input
         last_updated_str = request.POST.get('lastUpdated')
         if last_updated_str:
@@ -671,7 +700,8 @@ def add_product(request, product_id):
         product.latkha = request.POST.get('latkha')
         product.price = request.POST.get('price')
         product.purchased = 'purchased' in request.POST
-        
+        if product.purchased:
+            product.purchased_date = timezone.now()
         # Set the last_updated field from the form input
         last_updated_str = request.POST.get('lastUpdated')
         if last_updated_str:
@@ -708,10 +738,14 @@ def add_product(request, product_id):
 def export_data(request):
     # Helper function to convert datetime fields to formatted strings
     def convert_datetimes(data):
+        gmt_630 = pytz.timezone('Asia/Yangon')  # GMT+6:30 timezone (Myanmar Time)
+
         for item in data:
             for key, value in item.items():
-                if isinstance(value, (timezone.datetime, timezone.datetime)):  # Check if value is a datetime object
-                    item[key] = value.strftime('%Y-%m-%d %H:%M:%S')  # Convert to string
+                if isinstance(value, timezone.datetime):  # Check if value is a datetime object
+                    # Convert the datetime to GMT+6:30
+                    value = value.astimezone(gmt_630)  # Convert to GMT+6:30 timezone
+                    item[key] = value.strftime('%Y-%m-%d %H:%M:%S')  # Format the datetime to string
         return data
 
     # Prepare data for each model

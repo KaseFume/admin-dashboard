@@ -27,3 +27,7 @@ def convert_to_gmt630(value):
 
     return gmt630_time.strftime('%b %d, %Y, %I:%M %p')   # Format as needed
 register.filter('convert_to_gmt630',convert_to_gmt630)
+
+@register.filter
+def subtract(value, arg):
+    return value - arg

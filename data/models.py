@@ -4,7 +4,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
-
+from django.utils import timezone
 def get_upload_path(instance, filename):
     """Generate upload path dynamically based on the product type."""
     model_name = instance.content_type.model  # Get the model name (e.g., 'necklace')
@@ -22,8 +22,10 @@ class Necklace(models.Model):
     a_ywrt = models.TextField(blank=True, null=True)
     latkha = models.TextField(blank=True, null=True)
     price = models.BigIntegerField(blank=True, null=True)
-    purchased = models.BooleanField()
+    purchased = models.BooleanField(blank=True, null=True)
+    purchased_date = models.DateTimeField(blank=True, null=True)
     last_updated = models.DateTimeField(auto_now=True)
+    date_created = models.DateTimeField(auto_now=True)
 
 class EPRSet(models.Model):
     id = models.CharField(max_length=255, default="EPR-", primary_key=True)
@@ -36,8 +38,10 @@ class EPRSet(models.Model):
     a_ywrt = models.TextField(blank=True, null=True)
     latkha = models.TextField(blank=True, null=True)
     price = models.BigIntegerField(blank=True, null=True)
-    purchased = models.BooleanField()
+    purchased = models.BooleanField(blank=True, null=True)
+    purchased_date = models.DateTimeField(blank=True, null=True)
     last_updated = models.DateTimeField(auto_now=True)
+    date_created = models.DateTimeField(auto_now=True)
 
 class Earring(models.Model):
     id = models.CharField(max_length=255, default="E-", primary_key=True)
@@ -50,8 +54,10 @@ class Earring(models.Model):
     a_ywrt = models.TextField(blank=True, null=True)
     latkha = models.TextField(blank=True, null=True)
     price = models.BigIntegerField(blank=True, null=True)
-    purchased = models.BooleanField()
+    purchased = models.BooleanField(blank=True, null=True)
+    purchased_date = models.DateTimeField(blank=True, null=True)
     last_updated = models.DateTimeField(auto_now=True)
+    date_created = models.DateTimeField(auto_now=True)
 
 class Ring(models.Model):
     id = models.CharField(max_length=255, default="R-", primary_key=True)
@@ -64,8 +70,10 @@ class Ring(models.Model):
     a_ywrt = models.TextField(blank=True, null=True)
     latkha = models.TextField(blank=True, null=True)
     price = models.BigIntegerField(blank=True, null=True)
-    purchased = models.BooleanField()
+    purchased = models.BooleanField(blank=True, null=True)
+    purchased_date = models.DateTimeField(blank=True, null=True)
     last_updated = models.DateTimeField(auto_now=True)
+    date_created = models.DateTimeField(auto_now=True)
 
 class Handchain(models.Model):
     id = models.CharField(max_length=255, default="H-", primary_key=True)
@@ -78,8 +86,10 @@ class Handchain(models.Model):
     a_ywrt = models.TextField(blank=True, null=True)
     latkha = models.TextField(blank=True, null=True)
     price = models.BigIntegerField(blank=True, null=True)
-    purchased = models.BooleanField()
+    purchased = models.BooleanField(blank=True, null=True)
+    purchased_date = models.DateTimeField(blank=True, null=True)
     last_updated = models.DateTimeField(auto_now=True)
+    date_created = models.DateTimeField(auto_now=True)
 
 class Pendant(models.Model):
     id = models.CharField(max_length=255, default="P-", primary_key=True)
@@ -92,8 +102,19 @@ class Pendant(models.Model):
     a_ywrt = models.TextField(blank=True, null=True)
     latkha = models.TextField(blank=True, null=True)
     price = models.BigIntegerField(blank=True, null=True)
-    purchased = models.BooleanField()
+    purchased = models.BooleanField(blank=True, null=True)
+    purchased_date = models.DateTimeField(blank=True, null=True)
     last_updated = models.DateTimeField(auto_now=True)
+    date_created = models.DateTimeField(auto_now=True)
+    
+    
+    def save(self, *args, **kwargs):
+        # Set purchased_date when purchased is set to True for the first time
+        if self.purchased and not self.purchased_date:
+            self.purchased_date = timezone.now()
+        elif not self.purchased:
+            self.purchased_date = None  # Clear the date if `purchased` is set back to False
+        super().save(*args, **kwargs)
 
 def get_default_necklace_content_type_id():
     """Retrieve the ContentType ID for the Necklace model."""
@@ -113,7 +134,6 @@ class Image(models.Model):
 
     image = models.FileField(
         upload_to=get_upload_path,
-        storage=ClassSpecificStorage(location='images/'),
         blank=True
     )
 
@@ -156,13 +176,13 @@ def delete_old_image_on_change(sender, instance, **kwargs):
     # If the new image is different from the old one, delete the old one
     if old_image and old_image != instance.image:
         old_image.storage.delete(old_image.name)
-        
+
 class Currency(models.Model):
     # ContentType and Object ID fields for GenericForeignKey setup
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.CharField(max_length=255)  # Use CharField to support IDs like 'N-3232'
     product = GenericForeignKey('content_type', 'object_id')
-    
+
     # Currency type choices
     USD = 'USD'
     THB = 'THB'

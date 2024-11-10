@@ -17,7 +17,7 @@
         {% endif %}
     </div>
     </div>
-    
+
     <!-- Product ID Section -->
     <div class="input-wrapper">
         <label for="numberInput">Product ID:&nbsp;</label>
@@ -34,7 +34,7 @@
            <button type="button" class="enter-button" onclick=getProduct()>Enter</button>
         </div>
     </div>
-    
+
     <!-- Product Details Section -->
     <div class="form-container-2">
         <form id="productForm" enctype="multipart/form-data">
@@ -81,11 +81,19 @@
                     <span id="purchasedDisplay">{{ product.purchased|yesno:"Yes,No" }}</span>
                 </div>
                 <div class="grid-item">
+                    <label for="lastUpdated">Product Registered in:</label>
+                    <span id="lastUpdatedDisplay">{{ product.date_created }}</span>
+                </div>
+                <div class="grid-item">
                     <label for="lastUpdated">Last Updated Time:</label>
                     <span id="lastUpdatedDisplay">{{ product.last_updated }}</span>
                 </div>
+                <div class="grid-item">
+                    <label for="lastUpdated">Purchased Set On:</label>
+                    <span id="lastUpdatedDisplay">{{ product.purchased_date }}</span>
+                </div>
             </div>
-    
+
             <!-- Image Section -->
             <div id="imageUploadContainer">
                 <label>Uploaded Images:</label><br>
